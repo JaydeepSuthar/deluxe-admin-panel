@@ -1,13 +1,21 @@
 import { Toaster } from 'react-hot-toast';
-// import { FaHome } from 'react-icons/fa';
-import { Link, Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import './App.scss';
 import Loader from './components/loader/Loader';
 import Sidebar from './components/sidebar/Sidebar';
-import LoginPage from './pages/Login/Login';
 import useLoaderStore from './store/loader';
 
 import routes from './routes';
+
+// * Pages
+import LoginPage from './pages/Login/Login';
+import NotFound from './pages/NotFound/NotFound';
+import DashboardPage from './pages/Dashboard';
+import ProductPage from './pages/Product';
+import OrderPage from './pages/Order';
+import UserPage from './pages/User';
+import BannerPage from './pages/Banner';
+import CategoryPage from './pages/Category';
 
 const App = () => {
 	const isLoading = useLoaderStore((state) => state.isLoading);
@@ -21,50 +29,26 @@ const App = () => {
 				<Route path='login' element={<LoginPage />} />
 
 				<Route element={<SidebarLayout routes={routes} />}>
-					<Route path='/'>
-						<Route index element={<HomePage />} />
-						<Route path='sub' element={<SubHomePage />} />
+					<Route path='/' element={<DashboardPage />} />
+					<Route path='/product'>
+						<Route index element={<ProductPage />} />
 					</Route>
-					<Route path='about' element={<AboutPage />} />
-					<Route path='unauthorized' element={<LoginPage />} />
-					<Route path='*' element={<LoginPage />} />
+					<Route path='/order'>
+						<Route index element={<OrderPage />} />
+					</Route>
+					<Route path='/user'>
+						<Route index element={<UserPage />} />
+					</Route>
+					<Route path='/banner'>
+						<Route index element={<BannerPage />} />
+					</Route>
+					<Route path='/category'>
+						<Route index element={<CategoryPage />} />
+					</Route>
 				</Route>
+				<Route path='unauthorized' element={<LoginPage />} />
+				<Route path='*' element={<NotFound />} />
 			</Routes>
-		</>
-	);
-};
-
-const HomePage = () => {
-	return (
-		<>
-			<h1>Home Page</h1>
-			<Link to='/login' state={{ from: '/' }}>
-				login
-			</Link>
-			<Link to='/about'>about</Link>
-		</>
-	);
-};
-
-const SubHomePage = () => {
-	return (
-		<>
-			<h1>Sub Home Page</h1>
-			<Link to='/login' state={{ from: '/' }}>
-				login
-			</Link>
-			<Link to='/about'>about</Link>
-		</>
-	);
-};
-
-const AboutPage = () => {
-	return (
-		<>
-			<h1>About Page</h1>
-			<Link to='/login' state={{ from: '/about' }}>
-				login
-			</Link>
 		</>
 	);
 };

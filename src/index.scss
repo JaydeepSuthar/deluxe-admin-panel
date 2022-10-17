@@ -1,12 +1,11 @@
 // * Custom Vairables
 $mainBackgroudClr: hsl(220, 14%, 96%);
-// $mainBackgroudClr: hsl(220, 33%, 98%);
 $mainTextClr: hsl(0, 0%, 0%);
 
 $bgClr: #242b2e;
 $scrollBgClr: #758283;
 $txtClr: #fff;
-$orange: #f7931e;
+$active-menu-color: #0f172a;
 
 // * overrides sidebar
 $sidebar-bg-color: white;
@@ -17,16 +16,15 @@ $highlight-color: currentcolor;
 $submenu-bg-color: white;
 $submenu-bg-color-collapsed: hsl(0, 0%, 87%);
 $icon-bg-color: white;
-$icon-size: 35px;
+$icon-size: 40px;
 
-
-@import "external.scss";
+@import 'external.scss';
 
 * {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	font-family: "Poppins", sans-serif;
+	font-family: 'Poppins', sans-serif;
 }
 
 .main {
@@ -72,8 +70,7 @@ $icon-size: 35px;
 
 // * Sidebar Active color
 .activeClass {
-	// color: #47cf5d;
-	color: $orange;
+	color: $active-menu-color;
 	font-weight: 600;
 }
 .activeMenuClass {
@@ -81,13 +78,13 @@ $icon-size: 35px;
 	font-weight: 600;
 }
 
- // * add button 
+// * add button
 
- .btn-add{
-    width: 100px;
-   z-index: 1;
-   right: 10px;
-   margin: 10px;
-   top: 0;
-    position: absolute;
+.btn-add {
+	width: 100px;
+	z-index: 1;
+	right: 10px;
+	margin: 10px;
+	top: 0;
+	position: absolute;
 }

@@ -1,34 +1,43 @@
-import { FaHome } from 'react-icons/fa';
+import {
+	FaHome,
+	FaUserAlt,
+	FaShoppingBag,
+	FaPhotoVideo,
+	FaSitemap,
+	FaBox,
+} from 'react-icons/fa';
+
+import { AiFillDashboard } from 'react-icons/ai';
 
 const routes = [
 	{
 		name: 'Dashboard',
-		icon: <FaHome />,
+		icon: <AiFillDashboard />,
 		path: '/',
 	},
 	{
 		name: 'Product',
-		icon: <FaHome />,
+		icon: <FaBox />,
 		path: '/product',
 	},
 	{
 		name: 'Order',
-		icon: <FaHome />,
+		icon: <FaShoppingBag />,
 		path: '/order',
 	},
 	{
 		name: 'Category',
-		icon: <FaHome />,
+		icon: <FaSitemap />,
 		path: '/category',
 	},
 	{
 		name: 'User',
-		icon: <FaHome />,
+		icon: <FaUserAlt />,
 		path: '/user',
 	},
 	{
 		name: 'Banner',
-		icon: <FaHome />,
+		icon: <FaPhotoVideo />,
 		path: '/banner',
 	},
 ];
