@@ -1,5 +1,5 @@
-import create from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import create from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
 const sidebarState = (set) => ({
 	isCollapsed: false,
@@ -9,7 +9,7 @@ const sidebarState = (set) => ({
 
 const useSidebarStore = create(
 	devtools(persist(sidebarState), {
-		name: "Sidebar",
+		name: 'Sidebar',
 		getStorage: () => sessionStorage,
 	})
 );

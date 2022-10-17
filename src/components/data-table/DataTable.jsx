@@ -1,6 +1,6 @@
-import DataTable from "react-data-table-component";
+import DataTable from 'react-data-table-component';
 
-import "./style.scss";
+import './style.scss';
 
 const Table = ({ title, columns, data, ...rest }) => {
 	return (

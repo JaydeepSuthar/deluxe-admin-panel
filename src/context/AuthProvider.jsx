@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext({});
 
@@ -9,10 +9,10 @@ export const AuthProvider = ({ children }) => {
 		console.log({ auth });
 		let stringifiedValue = JSON.stringify(auth);
 
-		localStorage.setItem("auth", stringifiedValue);
+		localStorage.setItem('auth', stringifiedValue);
 
 		return () => {
-			localStorage.removeItem("auth");
+			localStorage.removeItem('auth');
 		};
 	}, [auth]);
 

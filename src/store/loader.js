@@ -1,5 +1,5 @@
-import create from "zustand";
-import { devtools } from "zustand/middleware";
+import create from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 const loaderState = (set) => ({
 	isLoading: false,
@@ -8,7 +8,7 @@ const loaderState = (set) => ({
 
 const useLoaderStore = create(
 	devtools(loaderState, {
-		name: "loading",
+		name: 'loading',
 	})
 );
 

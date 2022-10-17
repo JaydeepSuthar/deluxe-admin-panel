@@ -1,5 +1,5 @@
-import create from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import create from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
 const authStore = (set) => ({
 	isAuthenticated: false,
@@ -8,7 +8,7 @@ const authStore = (set) => ({
 
 const useAuthStore = create(
 	devtools(persist(authStore), {
-		name: "Auth",
+		name: 'Auth',
 		getStorage: () => localStorage,
 	})
 );

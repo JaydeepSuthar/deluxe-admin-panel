@@ -1,4 +1,4 @@
-import { FaBars } from "react-icons/fa";
+import { FaBars } from 'react-icons/fa';
 
 import {
 	Menu,
@@ -7,18 +7,18 @@ import {
 	SidebarContent,
 	SidebarHeader,
 	SubMenu,
-} from "react-pro-sidebar";
+} from 'react-pro-sidebar';
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 
-import useSidebarStore from "../../store";
+import useSidebarStore from '../../store';
 
 // * Sidebar Active Link
 import {
 	useActiveLink,
 	useActiveMenuLink,
 	useActiveSubMenuLink,
-} from "../../store/sidebarActiveStatus";
+} from '../../store/sidebarActiveStatus';
 
 const Sidebar = ({ routes }) => {
 	const location = useLocation();
@@ -49,24 +49,24 @@ const Sidebar = ({ routes }) => {
 	return (
 		<>
 			<ProSidebar
-				style={{ overflowY: "auto", height: "100vh" }}
+				style={{ overflowY: 'auto', height: '100vh' }}
 				collapsed={collapsed}
 			>
 				<SidebarHeader
 					className={`flex justify-content-${
-						collapsed ? "center" : "end"
+						collapsed ? 'center' : 'end'
 					} p-4`}
 				>
-					<div className="flex">
-						<div className="row">
+					<div className='flex'>
+						<div className='row'>
 							<div
 								className={`flex justify-content-${
-									collapsed ? "center" : "end"
+									collapsed ? 'center' : 'end'
 								}`}
 							>
-								<div className="col">
+								<div className='col'>
 									<FaBars
-										style={{ cursor: "pointer" }}
+										style={{ cursor: 'pointer' }}
 										onClick={toggleCollapsed}
 									/>
 								</div>
@@ -75,7 +75,7 @@ const Sidebar = ({ routes }) => {
 					</div>
 				</SidebarHeader>
 				<SidebarContent>
-					<Menu iconShape="square">
+					<Menu iconShape='square'>
 						{routes.map((route, idx) => {
 							if (route.routes) {
 								return (
@@ -85,7 +85,7 @@ const Sidebar = ({ routes }) => {
 										icon={route.icon}
 										className={
 											activeMenuLink === route.name &&
-											"activeMenuClass"
+											'activeMenuClass'
 										}
 									>
 										{route.routes.map((subRoute, idx) => {
@@ -99,7 +99,7 @@ const Sidebar = ({ routes }) => {
 														className={
 															activeSubMenuLink ===
 																subRoute.name &&
-															"activeMenuClass"
+															'activeMenuClass'
 														}
 													>
 														{subRoute.routes.map(
@@ -114,7 +114,7 @@ const Sidebar = ({ routes }) => {
 																	className={
 																		activeLink ===
 																			subSubRoute.path &&
-																		"activeClass"
+																		'activeClass'
 																		// activeLink
 																		// 	.state
 																		// 	.activeLink.includes(subSubRoute.path) &&
@@ -172,7 +172,7 @@ const Sidebar = ({ routes }) => {
 													className={
 														activeLink ===
 															subRoute.path &&
-														"activeClass"
+														'activeClass'
 													}
 													onClick={() => {
 														setActiveLink(
@@ -182,7 +182,7 @@ const Sidebar = ({ routes }) => {
 															route.name
 														);
 														setActiveSubMenuLink(
-															""
+															''
 														);
 													}}
 												>
@@ -199,7 +199,7 @@ const Sidebar = ({ routes }) => {
 															route.name
 														) &&
 														setActiveSubMenuLink(
-															""
+															''
 														)}
 													<Link to={subRoute.path} />
 												</MenuItem>
@@ -215,20 +215,20 @@ const Sidebar = ({ routes }) => {
 									icon={route.icon}
 									className={
 										activeLink === route.path &&
-										"activeClass"
+										'activeClass'
 									}
 									onClick={() => {
-										setActiveMenuLink("");
+										setActiveMenuLink('');
 										setActiveLink(route.path);
-										setActiveSubMenuLink("");
+										setActiveSubMenuLink('');
 									}}
 								>
 									{route.name}
 									{location.pathname == route.path &&
 										setActiveLink(route.path)}
 									{location.pathname == route.path &&
-										setActiveMenuLink("") &&
-										setActiveSubMenuLink("")}
+										setActiveMenuLink('') &&
+										setActiveSubMenuLink('')}
 
 									<Link to={route.path} />
 								</MenuItem>
