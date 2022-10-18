@@ -18,6 +18,7 @@ import BannerPage from './pages/Banner';
 import CategoryPage from './pages/Category';
 
 import AddProduct from './pages/Product/add'
+import AddBaner from './pages/Banner/add';
 
 const App = () => {
 	const isLoading = useLoaderStore((state) => state.isLoading);
@@ -44,6 +45,7 @@ const App = () => {
 					</Route>
 					<Route path='/banner'>
 						<Route index element={<BannerPage />} />
+						<Route path='add' element={<AddBaner />} />
 					</Route>
 					<Route path='/category'>
 						<Route index element={<CategoryPage />} />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, Card, Carousel } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import image1 from '../../assets/image-1.jpg';
 import image2 from '../../assets/image-2.jpg';
@@ -7,6 +8,7 @@ import image3 from '../../assets/image-3.jpg';
 import image4 from '../../assets/image-4.jpg';
 
 const BannerPage = () => {
+	const navigate = useNavigate();
 	const [index, setIndex] = useState(0);
 
 	const handleSelect = (selectedIndex, e) => {
@@ -19,7 +21,7 @@ const BannerPage = () => {
 
 			<Card>
 				<Card.Body className='tw-flex tw-justify-end'>
-					<Button variant='success'>Add Banner</Button>
+					<Button onClick={() => navigate('/banner/add')} variant='success'>Add Banner</Button>
 				</Card.Body>
 			</Card>
 
