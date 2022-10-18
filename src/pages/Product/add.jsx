@@ -24,7 +24,7 @@ const ProductValidation = Yup.object().shape({
 	youtube: Yup.string(),
 });
 
-const Product = () => {
+const AddProduct = () => {
 	return (
 		<div>
 			<Formik
@@ -203,4 +203,4 @@ const Product = () => {
 	);
 };
 
-export default Product;
+export default AddProduct;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Carousel } from 'react-bootstrap';
+import { Button, Card, Carousel } from 'react-bootstrap';
 
 import image1 from '../../assets/image-1.jpg';
 import image2 from '../../assets/image-2.jpg';
@@ -14,57 +14,63 @@ const BannerPage = () => {
 	};
 
 	return (
-		<Carousel activeIndex={index} onSelect={handleSelect} pause='hover'>
-			<Carousel.Item>
-				<img className='d-block w-100 tw-max-h-80 tw-object-cover' src={image1} alt='First slide' />
-				<Carousel.Caption>
-					<h3>First slide label</h3>
-					<p>
-						Nulla vitae elit libero, a pharetra augue mollis
-						interdum.
-					</p>
-				</Carousel.Caption>
-			</Carousel.Item>
-			<Carousel.Item>
-				<img
-					className='d-block w-100 tw-max-h-80 tw-object-cover'
-					src={image2}
-					alt='Second slide'
-				/>
+		<>
+			<h1>Banner Page</h1>
 
-				<Carousel.Caption>
-					<h3>Second slide label</h3>
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-					</p>
-				</Carousel.Caption>
-			</Carousel.Item>
-			<Carousel.Item>
-				<img className='d-block w-100 tw-max-h-80 tw-object-cover' src={image3} alt='Third slide' />
+			<Card>
+				<Card.Body className='tw-flex tw-justify-end'>
+					<Button variant='success'>Add Banner</Button>
+				</Card.Body>
+			</Card>
 
-				<Carousel.Caption>
-					<h3>Third slide label</h3>
-					<p>
-						Praesent commodo cursus magna, vel scelerisque nisl
-						consectetur.
-					</p>
-				</Carousel.Caption>
-			</Carousel.Item>
-			<Carousel.Item>
-				<img
-					className='d-block w-100 tw-max-h-80 tw-object-cover'
-					src={image4}
-					alt='Fourth slide'
-				/>
+			<Card>
+				<Card.Body>
+					<CarouselComponent
+						index={index}
+						setIndex={setIndex}
+						handleSelect={handleSelect}
+					/>
+				</Card.Body>
+			</Card>
+		</>
+	);
+};
 
-				<Carousel.Caption>
-					<h3>Fourth slide label</h3>
-					<p>
-						Praesent commodo cursus magna, vel scelerisque nisl
-						consectetur.
-					</p>
-				</Carousel.Caption>
-			</Carousel.Item>
+const carouselArr = [
+	{
+		img: image1,
+	},
+	{
+		img: image2,
+	},
+	{
+		img: image3,
+	},
+	{
+		img: image4,
+	},
+];
+
+const CarouselComponent = ({ index, setIndex, handleSelect }) => {
+	return (
+		<Carousel
+			// className='tw-w-full'
+			activeIndex={index}
+			onSelect={handleSelect}
+			pause='hover'
+		>
+			{carouselArr.map((item, idx) => (
+				<Carousel.Item>
+					<img
+						className='d-block w-100  tw-h-[600px] tw-object-cover'
+						src={item.img}
+						alt='First slide'
+					/>
+					<Carousel.Caption>
+						<h3>{item.title ? item.title : idx}</h3>
+					</Carousel.Caption>
+				</Carousel.Item>
+			))}
 		</Carousel>
 	);
 };

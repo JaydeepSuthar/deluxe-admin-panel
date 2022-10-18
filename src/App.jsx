@@ -17,6 +17,8 @@ import UserPage from './pages/User';
 import BannerPage from './pages/Banner';
 import CategoryPage from './pages/Category';
 
+import AddProduct from './pages/Product/add'
+
 const App = () => {
 	const isLoading = useLoaderStore((state) => state.isLoading);
 
@@ -32,6 +34,7 @@ const App = () => {
 					<Route path='/' element={<DashboardPage />} />
 					<Route path='/product'>
 						<Route index element={<ProductPage />} />
+						<Route path='add' element={<AddProduct />} />
 					</Route>
 					<Route path='/order'>
 						<Route index element={<OrderPage />} />
@@ -61,8 +64,8 @@ const SidebarLayout = ({ routes }) => {
 					<Sidebar routes={routes} />
 				</aside>
 
-				<main className='content'>
-					<div className='container mt-3'>
+				<main className='content '>
+					<div className='container mt-3 tw-flex tw-flex-col tw-gap-4'>
 						<Outlet />
 					</div>
 				</main>
