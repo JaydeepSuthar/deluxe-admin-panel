@@ -4,7 +4,7 @@ import {
 	BsLightningCharge,
 	BsLightningChargeFill,
 	BsPencilSquare,
-	BsTrash,
+	BsTrash,	
 } from 'react-icons/bs';
 import swal from 'sweetalert';
 
