@@ -1,5 +1,6 @@
+import axios from 'axios';
 import { useState } from 'react';
-import { Image, Card } from 'react-bootstrap';
+import { Image, Card, Button } from 'react-bootstrap';
 import {
 	BsLightningCharge,
 	BsLightningChargeFill,
@@ -11,6 +12,7 @@ import swal from 'sweetalert';
 import category from '../../../misc/category';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
+import AddCategoryModal from '../../components/model/AddCategoryModal';
 
 const delete_category = (name) => {
 	const deleteURL = `http://139.59.22.201/dashboard/delete_category?category_name=${name}`;
@@ -53,11 +55,11 @@ const columns = [
 		cell: (row) => {
 			return (
 				<>
-					<BsPencilSquare
+					{/* <BsPencilSquare
 						color='blue'
 						size={17}
 						onClick={() => alert(`Edit Category`)}
-					/>
+					/> */}
 
 					<BsTrash
 						color='red'
@@ -73,16 +75,24 @@ const columns = [
 	},
 ];
 
-const FilterComponent = ({ filterText, setFilterText }) => {
+const FilterComponent = ({ filterText, setFilterText, setShow }) => {
 	return (
 		<>
 			<Card className='mb-3 p-4 d-flex flex-row justify-content-end'>
 				<div>
-					{/* <input type='search' name='' id='' /> */}
 					<SearchFilter
 						filterText={filterText}
 						onFilter={(e) => setFilterText(e.target.value)}
+						className='mx-3'
 					/>
+
+					<Button
+						className='tw-bg-indigo-700 hover:tw-bg-indigo-600'
+						size='sm'
+						onClick={() => setShow(true)}
+					>
+						Add Category
+					</Button>
 				</div>
 			</Card>
 		</>
@@ -90,6 +100,20 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 };
 const CategoryPage = () => {
 	const [filterText, setFilterText] = useState('');
+	const [show, setShow] = useState(false);
+
+	const addCategory = async (values) => {
+		// console.log({ values });
+
+		const fd = new FormData();
+
+		fd.append('category_name', values.category_name);
+		fd.append('catimg', values.catimg);
+
+		const response = await axios.post('/add_category', fd);
+		console.log({ response });
+		setShow(false);
+	};
 
 	const filteredData = category.cat_list.filter(
 		(item) =>
@@ -104,9 +128,18 @@ const CategoryPage = () => {
 			<FilterComponent
 				filterText={filterText}
 				setFilterText={setFilterText}
+				setShow={setShow}
 			/>
 
 			<Table columns={columns} data={filteredData} />
+
+			{show && (
+				<AddCategoryModal
+					show={show}
+					setShow={setShow}
+					submitHandler={addCategory}
+				/>
+			)}
 		</>
 	);
 };

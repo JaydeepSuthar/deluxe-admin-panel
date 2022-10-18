@@ -16,7 +16,7 @@ const BannerPage = () => {
 	return (
 		<Carousel activeIndex={index} onSelect={handleSelect} pause='hover'>
 			<Carousel.Item>
-				<img className='d-block w-100' src={image1} alt='First slide' />
+				<img className='d-block w-100 tw-max-h-80 tw-object-cover' src={image1} alt='First slide' />
 				<Carousel.Caption>
 					<h3>First slide label</h3>
 					<p>
@@ -27,7 +27,7 @@ const BannerPage = () => {
 			</Carousel.Item>
 			<Carousel.Item>
 				<img
-					className='d-block w-100'
+					className='d-block w-100 tw-max-h-80 tw-object-cover'
 					src={image2}
 					alt='Second slide'
 				/>
@@ -40,7 +40,7 @@ const BannerPage = () => {
 				</Carousel.Caption>
 			</Carousel.Item>
 			<Carousel.Item>
-				<img className='d-block w-100' src={image3} alt='Third slide' />
+				<img className='d-block w-100 tw-max-h-80 tw-object-cover' src={image3} alt='Third slide' />
 
 				<Carousel.Caption>
 					<h3>Third slide label</h3>
@@ -52,7 +52,7 @@ const BannerPage = () => {
 			</Carousel.Item>
 			<Carousel.Item>
 				<img
-					className='d-block w-100'
+					className='d-block w-100 tw-max-h-80 tw-object-cover'
 					src={image4}
 					alt='Fourth slide'
 				/>

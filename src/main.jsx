@@ -9,7 +9,12 @@ import './index.scss';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-axios.defaults.baseURL = import.meta.env.PUBLIC_API_URL || ``;
+import './tailwind.css'
+
+axios.defaults.baseURL =
+	import.meta.env.PUBLIC_API_URL ||
+	`http://139.59.22.201/dashboard
+`;
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>

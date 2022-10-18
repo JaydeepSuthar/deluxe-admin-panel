@@ -4,7 +4,7 @@ import {
 	BsLightningCharge,
 	BsLightningChargeFill,
 	BsPencilSquare,
-	BsTrash,	
+	BsTrash,
 } from 'react-icons/bs';
 import swal from 'sweetalert';
 
@@ -163,7 +163,7 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 						className='mx-3'
 					/>
 
-					<Button variant='success' size='sm'>
+					<Button className='tw-bg-indigo-700 hover:tw-bg-indigo-600' size='sm'>
 						Add Product
 					</Button>
 				</div>
