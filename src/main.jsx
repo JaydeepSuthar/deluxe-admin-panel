@@ -7,6 +7,8 @@ import { AuthProvider } from './context/AuthProvider';
 
 import './index.scss';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 axios.defaults.baseURL = import.meta.env.PUBLIC_API_URL || ``;
 
 ReactDOM.createRoot(document.getElementById('root')).render(

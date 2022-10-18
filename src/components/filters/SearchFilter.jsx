@@ -35,7 +35,7 @@ const ClearButton = styled(Button)`
 	justify-content: center;
 `;
 
-const SearchFilter = ({ filterText, onFilter, clear, onClear }) => {
+const SearchFilter = ({ filterText, onFilter, clear, onClear,className }) => {
 	return (
 		<>
 			<TextField
@@ -45,6 +45,7 @@ const SearchFilter = ({ filterText, onFilter, clear, onClear }) => {
 				aria-label='Search Input'
 				value={filterText}
 				onChange={onFilter}
+				className={className}
 			/>
 			{clear && (
 				<ClearButton type='button' onClick={onClear}>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Card } from 'react-bootstrap';
+import { Image, Card, Button } from 'react-bootstrap';
 import {
 	BsLightningCharge,
 	BsLightningChargeFill,
@@ -155,13 +155,17 @@ const columns = [
 const FilterComponent = ({ filterText, setFilterText }) => {
 	return (
 		<>
-			<Card className='mb-3 p-4 d-flex flex-row justify-content-end'>
+			<Card className='mb-3 p-3 d-flex flex-row justify-content-end'>
 				<div>
-					{/* <input type='search' name='' id='' /> */}
 					<SearchFilter
 						filterText={filterText}
 						onFilter={(e) => setFilterText(e.target.value)}
+						className='mx-3'
 					/>
+
+					<Button variant='success' size='sm'>
+						Add Product
+					</Button>
 				</div>
 			</Card>
 		</>
@@ -188,7 +192,9 @@ const ProductPage = () => {
 				setFilterText={setFilterText}
 			/>
 
-			<Table columns={columns} data={filteredData} />
+			<Card className='p-2'>
+				<Table columns={columns} data={filteredData} />
+			</Card>
 		</>
 	);
 };
