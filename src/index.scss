@@ -1,5 +1,6 @@
 // * Custom Vairables
-$mainBackgroudClr: hsl(220, 14%, 96%);
+// $mainBackgroudClr: hsl(220, 14%, 96%);
+$mainBackgroudClr:white;
 $mainTextClr: hsl(0, 0%, 0%);
 
 $bgClr: #242b2e;
@@ -8,14 +9,14 @@ $txtClr: #fff;
 $active-menu-color: #0f172a;
 
 // * overrides sidebar
-$sidebar-bg-color: white;
+$sidebar-bg-color: #f3f4f6;
 $sidebar-color: black;
 $sidebar-width: 250px;
 $sidebar-collapsed-width: 80px;
 $highlight-color: currentcolor;
 $submenu-bg-color: white;
-$submenu-bg-color-collapsed: hsl(0, 0%, 87%);
-$icon-bg-color: white;
+$submenu-bg-color-collapsed: #f3f4f6;
+$icon-bg-color: #f3f4f6;
 $icon-size: 40px;
 
 @import 'external.scss';
