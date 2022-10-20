@@ -13,7 +13,7 @@ import './tailwind.css'
 
 axios.defaults.baseURL =
 	import.meta.env.PUBLIC_API_URL ||
-	`http://139.59.22.201/dashboard
+	`http://139.59.22.201/test_api
 `;
 
 ReactDOM.createRoot(document.getElementById('root')).render(
