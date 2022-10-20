@@ -18,6 +18,7 @@ import BannerPage from './pages/Banner';
 import CategoryPage from './pages/Category';
 
 import AddProduct from './pages/Product/add'
+import AddProduct2 from './pages/Product/add2'
 import AddBaner from './pages/Banner/add';
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
 					<Route path='/product'>
 						<Route index element={<ProductPage />} />
 						<Route path='add' element={<AddProduct />} />
+						<Route path='add2' element={<AddProduct2 />} />
 					</Route>
 					<Route path='/order'>
 						<Route index element={<OrderPage />} />
