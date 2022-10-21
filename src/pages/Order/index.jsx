@@ -4,6 +4,7 @@ import {
 	BsLightningCharge,
 	BsLightningChargeFill,
 	BsPencilSquare,
+	BsPrinterFill,
 	BsTrash,
 } from 'react-icons/bs';
 import swal from 'sweetalert';
@@ -48,6 +49,24 @@ const delete_product = (id) => {
 };
 
 const columns = [
+	{
+		name: 'PRINT',
+		// selector: (row) => row.banner.media,
+		cell: (row) => {
+			// let imageURL = `${BASE_URL}/${row.banner.media}`;
+
+			return (
+				<BsPrinterFill
+					size={22}
+					onClick={() => {
+						alert(JSON.stringify(row, null, 2));
+					}}
+				/>
+			);
+		},
+		// sortable: true,
+		width: '6em',
+	},
 	{
 		name: 'IMAGE',
 		selector: (row) => row.banner.media,

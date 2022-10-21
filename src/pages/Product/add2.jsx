@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useNavigate } from 'react-router-dom';
 
 const AddProductPage2 = () => {
 	const [value, setValue] = useState('');
+	const navigate = useNavigate();
 
 	return (
 		<>
@@ -13,13 +16,21 @@ const AddProductPage2 = () => {
 					theme='snow'
 					value={value}
 					onChange={(e) => {
-						console.log(e)
+						console.log(e);
 						setValue(e);
 					}}
 				/>
 			</div>
 
-			<button onClick={() => console.log(value)}>Save</button>
+			<Button
+				className='mt-5'
+				onClick={() => {
+					console.log(value);
+					navigate('/product/add3');
+				}}
+			>
+				Save
+			</Button>
 		</>
 	);
 };

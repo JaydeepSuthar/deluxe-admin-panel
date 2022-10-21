@@ -1,13 +1,31 @@
 import { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const AddProductPage3 = () => {
 	const [files, setFiles] = useState([]);
+	const navigate = useNavigate();
 
 	const handleProductImage = (files) => {
 		console.log(files);
 		const filesArr = [...files];
 
 		setFiles(filesArr);
+	};
+
+	const handleSubmit = () => {
+		swal({
+			title: 'Product successful added',
+			text: 'Your product is successful inserted',
+			icon: 'success',
+			buttons: true,
+			dangerMode: true,
+		}).then(async (value) => {
+			if (value) {
+				navigate('/product');
+			}
+		});
 	};
 
 	return (
@@ -36,6 +54,16 @@ const AddProductPage3 = () => {
 						/>
 					);
 				})}
+			</div>
+			<div>
+				<Button
+					className='mt-5'
+					onClick={() => {
+						handleSubmit();
+					}}
+				>
+					Save
+				</Button>
 			</div>
 		</>
 	);

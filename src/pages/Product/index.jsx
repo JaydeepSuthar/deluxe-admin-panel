@@ -6,6 +6,7 @@ import {
 	BsPencilSquare,
 	BsTrash,
 } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 
 import products from '../../../misc/product';
@@ -153,6 +154,7 @@ const columns = [
 ];
 
 const FilterComponent = ({ filterText, setFilterText }) => {
+	const navigate = useNavigate();
 	return (
 		<>
 			<Card className='mb-3 p-3 d-flex flex-row justify-content-end'>
@@ -163,7 +165,14 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 						className='mx-3'
 					/>
 
-					<Button className='tw-bg-indigo-700 hover:tw-bg-indigo-600' size='sm'>
+					<Button
+						className='tw-bg-indigo-700 hover:tw-bg-indigo-600'
+						size='sm'
+						onClick={() => {
+							navigate('/product/add');
+							// <Navigate to='product/add' replace={true} />;
+						}}
+					>
 						Add Product
 					</Button>
 				</div>

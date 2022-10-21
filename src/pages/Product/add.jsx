@@ -1,5 +1,5 @@
 import { Button, Image } from 'react-bootstrap';
-import { Field, Form, Formik } from 'formik';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 import React from 'react';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -19,6 +19,7 @@ import {
 } from '@dnd-kit/sortable';
 
 import { CSS } from '@dnd-kit/utilities';
+import { useNavigate } from 'react-router-dom';
 
 const ProductValidation = Yup.object().shape({
 	product_name: Yup.string()
@@ -43,6 +44,7 @@ const ProductValidation = Yup.object().shape({
 
 const AddProduct = () => {
 	const [files, setFiles] = useState([]);
+	const navigate = useNavigate();
 	// const {
 	// 	data: categoryList,
 	// 	error: categoryError,
@@ -83,22 +85,23 @@ const AddProduct = () => {
 					category: '',
 					hsn: '',
 					gst: '',
-					price: 0,
-					mrp: 0,
-					cartoon: 0,
-					stock: 0,
+					price: '',
+					mrp: '',
+					cartoon: '',
+					stock: '',
 					dimensions: '',
-					kilo: 0,
-					gram: 0,
+					kilo: '',
+					gram: '',
 					youtube: '',
 				}}
 				validationSchema={ProductValidation}
 				onSubmit={(values, { setSubmitting }) => {
 					alert(JSON.stringify(values, null, 2));
+					navigate('/product/add2');
 					setSubmitting(false);
 				}}
 			>
-				{({ errors, touched, isSubmitting }) => (
+				{({ errors, touched, isSubmitting, resetForm }) => (
 					<Form>
 						<h1>Product level 1</h1>
 
@@ -115,7 +118,7 @@ const AddProduct = () => {
 								/>
 							</div>
 
-							<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row tw-gap-4 tw-p-3'>
+							<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row flex-wrap tw-gap-4 tw-p-3'>
 								<DndContext
 									collisionDetection={closestCenter}
 									onDragEnd={handleDragEnd}
@@ -138,159 +141,283 @@ const AddProduct = () => {
 									</SortableContext>
 								</DndContext>
 							</div>
+						</div>
+						<div className='product-form tw-flex-1'>
+							<div style={{ width: '100%' }}>
+								<div className=''>
+									<label
+										htmlFor='product_name'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Product Name
+									</label>
+									<Field
+										name='product_name'
+										className={
+											'form-control' +
+											(errors.product_name &&
+											touched.product_name
+												? ' is-invalid'
+												: '')
+										}
+										type='text'
+									/>
+									{/* {errors.product_name &&
+									touched.product_name ? (
+										<div>{errors.product_name}</div>
+									) : null} */}
+									<label
+										htmlFor='category'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Category
+									</label>
+									<Field
+										as='select'
+										name='category'
+										className={
+											'form-control' +
+											(errors.category && touched.category
+												? ' is-invalid'
+												: '')
+										}
+									>
+										<option value={null}>
+											Select Category
+										</option>
+										{categoryList.map((item) => (
+											<option value={item}>{item}</option>
+										))}
+									</Field>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='hsn'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										HSN Number
+									</label>
+									<Field
+										name='hsn'
+										className={
+											'form-control' +
+											(errors.hsn && touched.hsn
+												? ' is-invalid'
+												: '')
+										}
+										type='text'
+									/>
+								</div>
 
-							<div className='product-form tw-flex-1'>
-								<div style={{ width: '100%' }}>
-									<div className=''>
-										<label
-											htmlFor='product_name'
-											className='mt-3'
-										>
-											Product Name
-										</label>
-										<Field
-											name='product_name'
-											className='form-control'
-											type='text'
-										/>
-										{errors.product_name &&
-										touched.product_name ? (
-											<div>{errors.product_name}</div>
-										) : null}
-										<label
-											htmlFor='category'
-											className='mt-3'
-										>
-											Category
-										</label>
-										<Field
-											as='select'
-											name='category'
-											className='form-control'
-										>
-											<option value={null}>
-												Select Category
-											</option>
-											{categoryList.map((item) => (
-												<option value={item}>
-													{item}
-												</option>
-											))}
-										</Field>
-									</div>
-									<div className=''>
-										<label htmlFor='hsn' className='mt-3'>
-											HSN Number
-										</label>
-										<Field
-											name='hsn'
-											className='form-control'
-											type='text'
-										/>
-									</div>
+								<div className=''>
+									<label
+										htmlFor='gst'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										GST
+									</label>
+									<Field
+										name='gst'
+										className={
+											'form-control' +
+											(errors.gst && touched.gst
+												? ' is-invalid'
+												: '')
+										}
+										type='text'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='price'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Price
+									</label>
+									<Field
+										name='price'
+										className={
+											'form-control' +
+											(errors.price && touched.price
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='mrp'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										MRP
+									</label>
+									<Field
+										name='mrp'
+										className={
+											'form-control' +
+											(errors.mrp && touched.mrp
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='cartoon'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Cartoon
+									</label>
+									<Field
+										name='cartoon'
+										className={
+											'form-control' +
+											(errors.cartoon && touched.cartoon
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='stock'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Stock
+									</label>
+									<Field
+										name='stock'
+										className={
+											'form-control' +
+											(errors.stock && touched.stock
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='dimensions'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Dimensions
+									</label>
+									<Field
+										name='dimensions'
+										className={
+											'form-control' +
+											(errors.dimensions &&
+											touched.dimensions
+												? ' is-invalid'
+												: '')
+										}
+										type='text'
+									/>
+								</div>
 
-									<div className=''>
-										<label htmlFor='gst' className='mt-3'>
-											GST
-										</label>
-										<Field
-											name='gst'
-											className='form-control'
-											type='text'
-										/>
-									</div>
-									<div className=''>
-										<label htmlFor='price' className='mt-3'>
-											Price
-										</label>
-										<Field
-											name='price'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-									<div className=''>
-										<label htmlFor='mrp' className='mt-3'>
-											MRP
-										</label>
-										<Field
-											name='mrp'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-									<div className=''>
-										<label
-											htmlFor='cartoon'
-											className='mt-3'
-										>
-											Cartoon
-										</label>
-										<Field
-											name='cartoon'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-									<div className=''>
-										<label htmlFor='stock' className='mt-3'>
-											Stock
-										</label>
-										<Field
-											name='stock'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-									<div className=''>
-										<label
-											htmlFor='dimensions'
-											className='mt-3'
-										>
-											Dimensions
-										</label>
-										<Field
-											name='dimensions'
-											className='form-control'
-											type='text'
-										/>
-									</div>
+								<div className=''>
+									<label
+										htmlFor='kilo'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Kilo
+									</label>
+									<Field
+										name='kilo'
+										className={
+											'form-control' +
+											(errors.kilo && touched.kilo
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
+								<div className=''>
+									<label
+										htmlFor='gram'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Gram
+									</label>
+									<Field
+										name='gram'
+										className={
+											'form-control' +
+											(errors.gram && touched.gram
+												? ' is-invalid'
+												: '')
+										}
+										type='number'
+									/>
+								</div>
 
-									<div className=''>
-										<label htmlFor='kilo' className='mt-3'>
-											Kilo
-										</label>
-										<Field
-											name='kilo'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-									<div className=''>
-										<label htmlFor='gram' className='mt-3'>
-											Gram
-										</label>
-										<Field
-											name='gram'
-											className='form-control'
-											type='number'
-										/>
-									</div>
-
-									<div className=''>
-										<label
-											htmlFor='youtube'
-											className='mt-3'
-										>
-											Youtube
-										</label>
-										<Field
-											name='youtube'
-											className='form-control'
-											type='text'
-										/>
-									</div>
-									{/* <div class='file-upload-wrapper'>
+								<div className=''>
+									<label
+										htmlFor='youtube'
+										className='mt-3'
+										style={{
+											fontWeight: '600',
+											color: 'hsl(0deg 0% 50%)',
+										}}
+									>
+										Youtube
+									</label>
+									<Field
+										name='youtube'
+										className='form-control'
+										type='text'
+									/>
+								</div>
+								{/* <div class='file-upload-wrapper'>
 										<input
 											type='file'
 											id='input-file-max-fs'
@@ -298,17 +425,16 @@ const AddProduct = () => {
 											data-max-file-size='2M'
 										/>
 									</div> */}
-									<div className=''>
-										<button
-											type='submit'
-											className='btn btn-primary mt-2'
-											disabled={isSubmitting}
-										>
-											{isSubmitting
-												? 'Please wait...'
-												: 'Submit'}
-										</button>
-									</div>
+								<div className=''>
+									<button
+										type='submit'
+										className='btn btn-primary mt-2'
+										disabled={isSubmitting}
+									>
+										{isSubmitting
+											? 'Please wait...'
+											: 'Submit'}
+									</button>
 								</div>
 							</div>
 						</div>
