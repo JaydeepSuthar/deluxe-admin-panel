@@ -21,6 +21,12 @@ import AddProduct from './pages/Product/add';
 import AddProduct2 from './pages/Product/add2';
 import AddProduct3 from './pages/Product/add3';
 import AddBaner from './pages/Banner/add';
+import axios from 'axios';
+import InvoiceBill from './components/invoice/invoicebill/InvoiceBill';
+const token =
+	'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6dHJ1ZSwiaWF0IjoxNjY2MDYwNTQxLCJqdGkiOiI0MGM2MDE2Yi00MTlkLTRjNGYtOGRlMC1hZTYzM2RjODNiMTMiLCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiZDQzYjZiYWQtNTc2NC00MzA4LWE1YzktNzU3ZDFiYTA5MDM2IiwibmJmIjoxNjY2MDYwNTQxLCJleHAiOjE2ODE2MTI1NDEsInVzZXJfdHlwZSI6MH0.0WATyMdoNQb93FPGjPyfII-cIBeXh7xG-YQn0-_wd5c';
+// axios.defaults.baseURL = 'http://139.59.22.201/dashboard';
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 const App = () => {
 	const isLoading = useLoaderStore((state) => state.isLoading);
@@ -57,6 +63,7 @@ const App = () => {
 				</Route>
 				<Route path='unauthorized' element={<LoginPage />} />
 				<Route path='*' element={<NotFound />} />
+				<Route path='demo' element={<InvoiceBill />} />
 			</Routes>
 		</>
 	);

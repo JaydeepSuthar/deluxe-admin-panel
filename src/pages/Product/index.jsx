@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { Image, Card, Button } from 'react-bootstrap';
 import {
+	BsBagPlusFill,
 	BsLightningCharge,
 	BsLightningChargeFill,
 	BsPencilSquare,
@@ -12,6 +14,7 @@ import swal from 'sweetalert';
 import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
+import AddStockModal from '../../components/model/AddStockModal';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
@@ -48,113 +51,9 @@ const delete_product = (id) => {
 	});
 };
 
-const columns = [
-	{
-		name: 'IMAGE',
-		selector: (row) => row.banner.media,
-		cell: (row) => {
-			let imageURL = `${BASE_URL}/${row.banner.media}`;
-
-			return <Image src={imageURL} width='80px' height={'80px'} />;
-		},
-		// sortable: true,
-		// width: "6em",
-	},
-	{
-		name: 'TITLE',
-		selector: (row) => row.title,
-		sortable: true,
-		// wrap: true,
-		// width: "6em",
-	},
-	{
-		name: 'CATEGORY',
-		selector: (row) => row.category,
-		// sortable: true,
-		wrap: true,
-		width: '12em',
-	},
-	{
-		name: 'STOCK',
-		selector: (row) => row.stock,
-		// sortable: true,
-		// width: "6em",
-	},
-	{
-		name: 'CARTOON',
-		selector: (row) => row.cartoon,
-		// sortable: true,
-		// width: "6em",
-	},
-	{
-		name: 'TRENDING',
-		// selector: (row) => `${row.isTrending}`,
-		cell: (row) => {
-			return (
-				<div
-					className='trending'
-					onClick={() => toggle_trending(row.product_id)}
-				>
-					{row.isTrending ? (
-						<BsLightningChargeFill color='orange' size='16px' />
-					) : (
-						<BsLightningCharge size='16px' />
-					)}
-				</div>
-			);
-		},
-		// sortable: true,
-		// width: "6em",
-	},
-	{
-		name: 'PRICE',
-		selector: (row) => row.price,
-		sortable: true,
-		// width: "6em",
-		wrap: true,
-	},
-	{
-		name: 'MRP',
-		selector: (row) => row.mrp,
-		sortable: true,
-		// width: "6em",
-		wrap: true,
-	},
-	{
-		name: 'DISCOUNT',
-		selector: (row) => `${row.discount_percentage}%`,
-		sortable: true,
-		// width: "6em",
-		wrap: true,
-	},
-	{
-		name: 'ACTIONS',
-		// selector: (row) => `${row.discount_percentage}%`,
-		cell: (row) => {
-			return (
-				<>
-					<BsPencilSquare
-						color='blue'
-						size={17}
-						onClick={() => alert(`Edit Product`)}
-					/>
-
-					<BsTrash
-						color='red'
-						className='mx-3'
-						size={17}
-						onClick={() => delete_product(row.product_id)}
-					/>
-				</>
-			);
-		},
-		// sortable: true,
-		width: '12em',
-	},
-];
-
 const FilterComponent = ({ filterText, setFilterText }) => {
 	const navigate = useNavigate();
+
 	return (
 		<>
 			<Card className='mb-3 p-3 d-flex flex-row justify-content-end'>
@@ -183,14 +82,248 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 
 const ProductPage = () => {
 	const [filterText, setFilterText] = useState('');
+	const [data, setData] = useState([]);
+	const [stockModal, setStockModal] = useState({});
+	const [show, setShow] = useState(false);
 
-	const filteredData = products.response.filter(
-		(item) =>
-			(item.title &&
-				item.title.toLowerCase().includes(filterText.toLowerCase())) ||
-			(item.category &&
-				item.category.toLowerCase().includes(filterText.toLowerCase()))
-	);
+	// TODO: API calling demo
+	useEffect(() => {
+		const apiCall = async () => {
+			try {
+				const response = await axios.get(
+					'http://139.59.22.201/test_api/product/showcase?page=1'
+				);
+				console.log(response);
+				if (response.status == 200) {
+					console.log('response==>', response.data.response);
+					if (Array.isArray(response.data.response)) {
+						setData(response.data.response);
+					}
+					// alert(`Trending`);
+					// window.location.reload();
+				} else {
+					console.log('ERROR =>', { response });
+				}
+			} catch (err) {
+				console.log({ err });
+			}
+		};
+		apiCall();
+	}, []);
+
+	const columns = [
+		{
+			name: 'IMAGE',
+			// selector: (row) => row.banner.media ,
+			cell: (row) => {
+				// let imageURL;
+				if (row.banner?.media) {
+					let imageURL = `${BASE_URL}/${row.banner.media}`;
+					return (
+						<Image src={imageURL} width='80px' height={'80px'} />
+					);
+				} else {
+					return <p>No FIle</p>;
+					// imageURL = '';
+				}
+			},
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'TITLE',
+			selector: (row) => row.title,
+			sortable: true,
+			// wrap: true,
+			// width: "6em",
+		},
+		{
+			name: 'CATEGORY',
+			selector: (row) => row.category,
+			// sortable: true,
+			wrap: true,
+			width: '12em',
+		},
+		{
+			name: 'STOCK',
+			selector: (row) => row.stock,
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'CARTOON',
+			selector: (row) => row.cartoon,
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'TRENDING',
+			// selector: (row) => `${row.isTrending}`,
+			cell: (row) => {
+				return (
+					<div
+						className='trending'
+						onClick={() => toggle_trending(row.product_id)}
+					>
+						{row.isTrending ? (
+							<BsLightningChargeFill color='orange' size='16px' />
+						) : (
+							<BsLightningCharge size='16px' />
+						)}
+					</div>
+				);
+			},
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'PRICE',
+			selector: (row) => row.price,
+			sortable: true,
+			// width: "6em",
+			wrap: true,
+		},
+		{
+			name: 'MRP',
+			selector: (row) => row.mrp,
+			sortable: true,
+			// width: "6em",
+			wrap: true,
+		},
+		{
+			name: 'DISCOUNT',
+			selector: (row) => `${row.discount_percentage}%`,
+			sortable: true,
+			// width: "6em",
+			wrap: true,
+		},
+		{
+			name: 'ACTIONS',
+			// selector: (row) => `${row.discount_percentage}%`,
+			cell: (row) => {
+				return (
+					<>
+						<i
+							type='button'
+							className='
+								px-6
+								py-2.5
+								bg-blue-600
+								text-white
+								font-medium
+								text-xs
+								leading-tight
+								uppercase
+								rounded
+								shadow-md
+								hover:bg-blue-700 hover:shadow-lg
+								focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+								active:bg-blue-800 active:shadow-lg
+								transition
+								duration-150
+								ease-in-out'
+							data-bs-toggle='tooltip'
+							data-bs-placement='bottom'
+							title='Add stock'
+						>
+							<BsBagPlusFill
+								color='green'
+								className='mx-3'
+								size={17}
+								onClick={() => handleStock(row)}
+							/>
+						</i>
+						<i
+							type='button'
+							className='
+								px-6
+								py-2.5
+								bg-blue-600
+								text-white
+								font-medium
+								text-xs
+								leading-tight
+								uppercase
+								rounded
+								shadow-md
+								hover:bg-blue-700 hover:shadow-lg
+								focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+								active:bg-blue-800 active:shadow-lg
+								transition
+								duration-150
+								ease-in-out'
+							data-bs-toggle='tooltip'
+							data-bs-placement='bottom'
+							title='Edit'
+						>
+							<BsPencilSquare
+								color='blue'
+								size={17}
+								onClick={() => alert(`Edit Product`)}
+							/>
+						</i>
+						<i
+							type='button'
+							className='
+								px-6
+								py-2.5
+								bg-blue-600
+								text-white
+								font-medium
+								text-xs
+								leading-tight
+								uppercase
+								rounded
+								shadow-md
+								hover:bg-blue-700 hover:shadow-lg
+								focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+								active:bg-blue-800 active:shadow-lg
+								transition
+								duration-150
+								ease-in-out'
+							data-bs-toggle='tooltip'
+							data-bs-placement='bottom'
+							title='Delete'
+						>
+							<BsTrash
+								color='red'
+								className='mx-3'
+								size={17}
+								onClick={() => delete_product(row.product_id)}
+							/>
+						</i>
+					</>
+				);
+			},
+			// sortable: true,
+			width: '12em',
+		},
+	];
+	// const filteredData = products.response.filter(
+	let filteredData = [];
+
+	if (data.length > 0) {
+		console.log('hello', data);
+		filteredData = data.filter(
+			(item) =>
+				(item.title &&
+					item.title
+						.toLowerCase()
+						.includes(filterText.toLowerCase())) ||
+				(item.category &&
+					item.category
+						.toLowerCase()
+						.includes(filterText.toLowerCase()))
+		);
+	}
+	const handleStock = (row) => {
+		console.log('hello', row);
+		setStockModal(row);
+		setShow(true);
+	};
+	const submitHandler = async (values) => {
+		console.log('values ==>', values);
+	};
 
 	return (
 		<>
@@ -204,6 +337,13 @@ const ProductPage = () => {
 			<Card className='p-2'>
 				<Table columns={columns} data={filteredData} />
 			</Card>
+			{show && (
+				<AddStockModal
+					show={show}
+					setShow={setShow}
+					submitHandler={submitHandler}
+				/>
+			)}
 		</>
 	);
 };

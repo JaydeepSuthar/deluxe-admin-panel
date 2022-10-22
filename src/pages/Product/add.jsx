@@ -1,7 +1,7 @@
 import { Button, Image } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 
 import category from '../../../misc/category';
@@ -20,6 +20,7 @@ import {
 
 import { CSS } from '@dnd-kit/utilities';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ProductValidation = Yup.object().shape({
 	product_name: Yup.string()
@@ -43,8 +44,32 @@ const ProductValidation = Yup.object().shape({
 });
 
 const AddProduct = () => {
-	const [files, setFiles] = useState([]);
+	// const [files, setFiles] = useState([]);
+	const [files, setFiles] = useState({});
+	const [filesUrl, setFilesUrl] = useState('');
+	const [product_id, setProduct_id] = useState('');
+
 	const navigate = useNavigate();
+	useEffect(() => {
+		let fd2 = new FormData();
+		fd2.append('product_id', '5a7ba345-b614-45cd-bb2a-aa5d82daf590');
+		fd2.append('type', 'image');
+		fd2.append('priority', 0);
+		fd2.append('banner', files);
+
+		const api = async () => {
+			const bannerApi = await axios.put('/update_media/banner', fd2);
+			if (bannerApi.status == 200) {
+				console.log(bannerApi);
+				alert(JSON.stringify(bannerApi, null, 2));
+				// navigate('/product/add2');
+			} else {
+				alert(JSON.stringify(bannerApi, null, 2));
+			}
+		};
+		api();
+	}, [files]);
+
 	// const {
 	// 	data: categoryList,
 	// 	error: categoryError,
@@ -56,10 +81,12 @@ const AddProduct = () => {
 	const categoryList = category.cat_list.map((item) => item.name);
 
 	const handleProductImage = (files) => {
-		const filesArr = [...files];
+		// const filesArr = [...files];
 
 		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
-		setFiles(filesArr);
+		// setFiles(filesArr);
+		setFilesUrl(URL.createObjectURL(files));
+		setFiles(files);
 	};
 
 	const handleDragEnd = (event) => {
@@ -75,6 +102,68 @@ const AddProduct = () => {
 				return arrayMove(items, activeIndex, overIndex);
 			});
 		}
+	};
+	const handleSubmit = async (values) => {
+		try {
+			// console.log('hello 111');
+			const response = await axios.get(
+				'http://139.59.22.201/test_api/get_new_product_id'
+			);
+			// console.log('hello', response);
+
+			if (response.status == 200) {
+				localStorage.setItem('product_id', response.data.id);
+				console.log(response.data.id);
+				setProduct_id(response.data.id);
+				let fd = new FormData();
+				// p_id="5a7ba345-b614-45cd-bb2a-aa5d82daf590"
+				fd.append('product_id', response.data.id);
+				fd.append('product_name', values.product_name);
+				fd.append('category', values.category);
+				fd.append('hsn', values.hsn);
+				fd.append('gst', values.gst);
+				fd.append('price', values.price);
+				fd.append('product_id', response.data.id);
+				fd.append('mrp', values.mrp);
+				fd.append('cartoon', values.cartoon);
+				fd.append('stock', values.stock);
+				fd.append('dimensions', values.dimensions);
+				fd.append('kilo', values.kilo);
+				fd.append('gram', values.gram);
+				fd.append('youtube', values.youtube);
+				const product1 = await axios.post(
+					'http://139.59.22.201/test_api/init_product',
+					fd
+				);
+				if (product1.status == 200) {
+					console.log(product1);
+					let fd2 = new FormData();
+					fd2.append('product_id', response.data.id);
+					fd2.append('type', 'image');
+					fd2.append('priority', 0);
+					fd2.append('banner', files);
+
+					const bannerApi = await axios.put(
+						'/update_media/banner',
+						fd2
+					);
+					if (bannerApi.status == 200) {
+						console.log(bannerApi);
+						alert(JSON.stringify(bannerApi, null, 2));
+						navigate('/product/add2');
+					} else {
+						alert(JSON.stringify(bannerApi, null, 2));
+					}
+				} else {
+					alert(JSON.stringify(product1, null, 2));
+				}
+			} else {
+				alert(JSON.stringify(response, null, 2));
+			}
+		} catch (error) {
+			alert(JSON.stringify(error, null, 2));
+		}
+		// setSubmitting(false);
 	};
 
 	return (
@@ -96,8 +185,8 @@ const AddProduct = () => {
 				}}
 				validationSchema={ProductValidation}
 				onSubmit={(values, { setSubmitting }) => {
-					alert(JSON.stringify(values, null, 2));
-					navigate('/product/add2');
+					// alert(JSON.stringify(values, null, 2));
+					handleSubmit(values);
 					setSubmitting(false);
 				}}
 			>
@@ -113,7 +202,7 @@ const AddProduct = () => {
 									className='tw-opacity-0 tw-absolute tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-cursor-pointer'
 									multiple
 									onChange={(e) => {
-										handleProductImage(e.target.files);
+										handleProductImage(e.target.files[0]);
 									}}
 								/>
 							</div>
@@ -123,11 +212,17 @@ const AddProduct = () => {
 									collisionDetection={closestCenter}
 									onDragEnd={handleDragEnd}
 								>
-									<SortableContext
+									{/* <SortableContext
 										items={files}
 										strategy={horizontalListSortingStrategy}
-									>
-										{files.map((item, idx) => {
+									> */}
+									<img
+										src={filesUrl}
+										width={'100px'}
+										height={'100px'}
+										alt=''
+									/>
+									{/* {files.map((item, idx) => {
 											let itemToURL =
 												URL.createObjectURL(item);
 											return (
@@ -137,8 +232,8 @@ const AddProduct = () => {
 													src={itemToURL}
 												/>
 											);
-										})}
-									</SortableContext>
+										})} */}
+									{/* </SortableContext> */}
 								</DndContext>
 							</div>
 						</div>
