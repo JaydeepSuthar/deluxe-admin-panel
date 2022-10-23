@@ -21,20 +21,20 @@ const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 const toggle_trending = async (id) => {
 	const url = `http://139.59.22.201/dashboard/product_toogle_trending?product_id=${id}`;
 
-	alert('Product is now Trending');
 
-	// try {
-	// 	const response = await axios.get(url);
 
-	// 	if (response.status == 200) {
-	// 		alert(`Trending`);
-	// 		window.location.reload();
-	// 	} else {
-	// 		console.log({ response });
-	// 	}
-	// } catch (err) {
-	// 	console.log({ err });
-	// }
+	try {
+	const response = await axios.get(url);
+
+		if (response.status == 200) {
+			alert(`Trending`);
+	window.location.reload();
+	 	} else {
+			console.log({ response });
+	 	}
+	} catch (err) {
+	 	console.log({ err });
+	}
 };
 
 const delete_product = (id) => {
