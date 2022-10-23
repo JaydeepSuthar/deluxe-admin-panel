@@ -24,16 +24,16 @@ const toggle_trending = async (id) => {
 
 
 	try {
-	const response = await axios.get(url);
+		const response = await axios.get(url);
 
 		if (response.status == 200) {
 			alert(`Trending`);
-	window.location.reload();
-	 	} else {
+			window.location.reload();
+		} else {
 			console.log({ response });
-	 	}
+		}
 	} catch (err) {
-	 	console.log({ err });
+		console.log({ err });
 	}
 };
 
@@ -46,7 +46,24 @@ const delete_product = (id) => {
 		dangerMode: true,
 	}).then(async (value) => {
 		if (value) {
-			alert(`Product is Deleted`);
+			// alert(`Product is Deleted`);
+
+			const url = `http://139.59.22.201/dashboard/delete_product?product_id=${id}`;
+
+
+
+			try {
+				const response = await axios.get(url);
+
+				if (response.status == 200) {
+					alert(`Prodduct Deleted Successfully`);
+					window.location.reload();
+				} else {
+					console.log({ response });
+				}
+			} catch (err) {
+				console.log({ err });
+			}
 		}
 	});
 };
