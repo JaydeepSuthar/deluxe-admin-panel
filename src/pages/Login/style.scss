@@ -1,0 +1,148 @@
+$primary: #fff;
+$theme: #be1850;
+$light1: #f3f4f6;
+$light2: #e5e7e8;
+$dark1: #1f2937;
+$dark2: #4b5563;
+$dark3: #9ca3af;
+$red: #dc2626;
+$green: #32ca4b;
+$orange: #f7931e;
+
+$shadow_color: hsl(215deg 14% 70%);
+
+// $card_width: 500px;
+$card_width: 420px;
+// $card_height: 650px;
+$card_height: 500px;
+
+// $border_radius: 0.875em;
+$border_radius: 1em;
+
+.login__page__bg {
+	margin: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	// background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+	background: $light1;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 0.5rem;
+	padding-top: 25px;
+
+	.title {
+		font-size: x-large;
+		font-weight: 600;
+		// color: $dark2;
+		// letter-spacing: 1px;
+	}
+
+	.logo {
+		margin-top: 1.2em;
+		margin-bottom: 0.5em;
+		max-width: 100%;
+		width: 200px;
+		image-rendering: -webkit-optimize-contrast;
+	}
+}
+
+.login__card {
+	background: $primary;
+	color: $dark1;
+	width: $card_width;
+	height: $card_height;
+
+	border: 0px;
+	border-radius: $border_radius;
+
+	box-shadow: 0px 0.5px 2px 0px $shadow_color;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	.login__form {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		.form__input {
+			display: block;
+			margin: 1em;
+			// margin: 2em 1.875em;
+			// padding-top: 10px;
+			padding: 0.5em;
+
+			label {
+				margin-left: 1px;
+				margin-bottom: 0.5em;
+				font-weight: 500;
+				font-size: small;
+
+				&:not(#showPasswordInput)::after {
+					content: ' *';
+					color: rgb(255, 100, 100);
+				}
+			}
+
+			input:not(#checkbox) {
+				margin-top: 1px;
+				border: 1px solid #d7d7d7;
+
+				border-radius: $border_radius;
+
+				display: block;
+				width: 100%;
+				padding: 0.875em;
+			}
+			input:focus {
+				outline-style: none;
+				border: 1px solid red;
+			}
+
+			.login__btn {
+				width: 100%;
+				background: $orange;
+
+				font-size: medium;
+				font-weight: 500;
+				letter-spacing: 1px;
+				// margin-bottom: 1em;
+				color: $light1;
+				padding: 0.5em;
+
+				border: 0px;
+				border-radius: 0.3em;
+				position: relative;
+				bottom: 30px;
+
+				&:hover {
+					opacity: 0.9;
+				}
+			}
+		}
+	}
+}
+
+.show_password {
+	padding-left: 10px;
+}
+
+#checkbox__form__input {
+	margin-right: 5px;
+	margin-bottom: 1em;
+	margin-left: 1.5em;
+	position: relative;
+	top: -20px;
+}
