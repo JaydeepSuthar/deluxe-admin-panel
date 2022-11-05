@@ -57,8 +57,9 @@ const AddCategoryModal = ({ show, setShow, submitHandler }) => {
 							<Form.Control
 								type='file'
 								accept='images/*'
-								onBlur={(event) => {
-									setFile(event.target.files[0]);
+								onChange={(event) => {
+									console.log(event.target.files);
+									setFile(event.target.files);
 
 									setFileError(false);
 

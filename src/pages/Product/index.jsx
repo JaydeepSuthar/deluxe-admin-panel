@@ -15,13 +15,12 @@ import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddStockModal from '../../components/model/AddStockModal';
+import { useFetch } from '../../hooks';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
 const toggle_trending = async (id) => {
 	const url = `http://139.59.22.201/dashboard/product_toogle_trending?product_id=${id}`;
-
-
 
 	try {
 		const response = await axios.get(url);
@@ -49,8 +48,6 @@ const delete_product = (id) => {
 			// alert(`Product is Deleted`);
 
 			const url = `http://139.59.22.201/dashboard/delete_product?product_id=${id}`;
-
-
 
 			try {
 				const response = await axios.get(url);
@@ -99,34 +96,36 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 
 const ProductPage = () => {
 	const [filterText, setFilterText] = useState('');
-	const [data, setData] = useState([]);
+	// const [data, setData] = useState([]);
 	const [stockModal, setStockModal] = useState({});
 	const [show, setShow] = useState(false);
 
+	const { data, error, isLoading } = useFetch('/product/showcase?page=1');
+
 	// TODO: API calling demo
-	useEffect(() => {
-		const apiCall = async () => {
-			try {
-				const response = await axios.get(
-					'http://139.59.22.201/test_api/product/showcase?page=1'
-				);
-				console.log(response);
-				if (response.status == 200) {
-					console.log('response==>', response.data.response);
-					if (Array.isArray(response.data.response)) {
-						setData(response.data.response);
-					}
-					// alert(`Trending`);
-					// window.location.reload();
-				} else {
-					console.log('ERROR =>', { response });
-				}
-			} catch (err) {
-				console.log({ err });
-			}
-		};
-		apiCall();
-	}, []);
+	// useEffect(() => {
+	// 	const apiCall = async () => {
+	// 		try {
+	// 			const response = await axios.get(
+	// 				'http://139.59.22.201/test_api/product/showcase?page=1'
+	// 			);
+	// 			console.log(response);
+	// 			if (response.status == 200) {
+	// 				console.log('response==>', response.data.response);
+	// 				if (Array.isArray(response.data.response)) {
+	// 					setData(response.data.response);
+	// 				}
+	// 				// alert(`Trending`);
+	// 				// window.location.reload();
+	// 			} else {
+	// 				console.log('ERROR =>', { response });
+	// 			}
+	// 		} catch (err) {
+	// 			console.log({ err });
+	// 		}
+	// 	};
+	// 	apiCall();
+	// }, []);
 
 	const columns = [
 		{
@@ -317,11 +316,17 @@ const ProductPage = () => {
 		},
 	];
 	// const filteredData = products.response.filter(
+
+	if (isLoading) return <h1>Loading...</h1>;
+
+	if (error) return <h1>Error Occur</h1>;
+
+	console.log({ data });
+
+
 	let filteredData = [];
 
-	if (data.length > 0) {
-		console.log('hello', data);
-		filteredData = data.filter(
+		filteredData = data?.response?.filter(
 			(item) =>
 				(item.title &&
 					item.title
@@ -332,7 +337,7 @@ const ProductPage = () => {
 						.toLowerCase()
 						.includes(filterText.toLowerCase()))
 		);
-	}
+
 	const handleStock = (row) => {
 		console.log('hello', row);
 		setStockModal(row);

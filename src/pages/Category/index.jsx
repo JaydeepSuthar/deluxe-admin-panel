@@ -15,7 +15,7 @@ import SearchFilter from '../../components/filters/SearchFilter';
 import AddCategoryModal from '../../components/model/AddCategoryModal';
 
 const delete_category = (name) => {
-	const deleteURL = `http://139.59.22.201/dashboard/delete_category?category_name=${name}`;
+	const deleteURL = `delete_category?category_name=${name}`;
 
 	swal({
 		title: 'Are you sure?',
@@ -25,7 +25,16 @@ const delete_category = (name) => {
 		dangerMode: true,
 	}).then(async (value) => {
 		if (value) {
-			alert(`Category is Deleted`);
+			// alert(`Category is Deleted`);
+
+			const response = await axios.get(deleteURL);
+
+			if (response.status == 200) {
+				alert(`Category is Deleted`);
+				window.location.reload();
+			} else {
+				alert(JSON.stringify(response));
+			}
 		}
 	});
 };
@@ -132,20 +141,21 @@ const CategoryPage = () => {
 		};
 		apiCall();
 	}, []);
+
 	const addCategory = async (values) => {
-		// console.log({ values });
+		console.log({ values });
 
 		const fd = new FormData();
 
 		fd.append('category_name', values.category_name);
-		fd.append('catimg', values.catimg);
+		fd.append('catimg', values.catimg[0]);
 
 		try {
 			const response = await axios.post('/add_category', fd);
 			console.log('category add=>', response);
 			if (response.status == 200) {
 				console.log('Category api data==>', response);
-				// window.location.reload();
+				window.location.reload();
 			} else {
 				alert(JSON.stringify(response, null, 2));
 				console.log({ response });

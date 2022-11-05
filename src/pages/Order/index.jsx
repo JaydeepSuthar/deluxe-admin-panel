@@ -13,26 +13,27 @@ import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import InvoiceBill from '../../components/invoice/invoicebill/InvoiceBill';
+import { useFetch } from '../../hooks';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
 const toggle_trending = async (id) => {
-	const url = `http://139.59.22.201/dashboard/product_toogle_trending?product_id=${id}`;
+	const url = `product_toogle_trending?product_id=${id}`;
 
 	alert('Product is now Trending');
 
-	// try {
-	// 	const response = await axios.get(url);
+	try {
+		const response = await axios.get(url);
 
-	// 	if (response.status == 200) {
-	// 		alert(`Trending`);
-	// 		window.location.reload();
-	// 	} else {
-	// 		console.log({ response });
-	// 	}
-	// } catch (err) {
-	// 	console.log({ err });
-	// }
+		if (response.status == 200) {
+			alert(`Trending`);
+			window.location.reload();
+		} else {
+			console.log({ response });
+		}
+	} catch (err) {
+		console.log({ err });
+	}
 };
 
 const delete_product = (id) => {
@@ -60,12 +61,12 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 						className='mx-3'
 					/>
 
-					<Button
+					{/* <Button
 						className='tw-bg-green-700 hover:tw-bg-green-600'
 						size='sm'
 					>
 						Add Order
-					</Button>
+					</Button> */}
 				</div>
 			</Card>
 		</>
@@ -75,6 +76,8 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 const OrderPage = () => {
 	const [filterText, setFilterText] = useState('');
 	const [invoiceShow, setInvoiceShow] = useState(false);
+
+	const { data, error, isLoading } = useFetch('get_current_active_orders');
 
 	const columns = [
 		{
@@ -200,13 +203,21 @@ const OrderPage = () => {
 			width: '12em',
 		},
 	];
-	const filteredData = products.response.filter(
+
+	if (isLoading) return <h1>Loading...</h1>;
+
+	if (error) return <h1>Error Occur</h1>;
+
+	console.log({ data });
+
+	const filteredData = data?.active_orders?.filter(
 		(item) =>
 			(item.title &&
 				item.title.toLowerCase().includes(filterText.toLowerCase())) ||
 			(item.category &&
 				item.category.toLowerCase().includes(filterText.toLowerCase()))
 	);
+
 	const handlePrint = () => {
 		let body = document.body.innerHTML;
 		let print = document.getElementById('invoice').innerHTML;
