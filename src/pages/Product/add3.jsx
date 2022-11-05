@@ -15,6 +15,7 @@ const AddProductPage3 = () => {
 		let productId = localStorage.getItem('product_id');
 		setProduct_id(productId);
 	}, []);
+
 	const handleProductImage = (files) => {
 		console.log(files);
 		// const filesArr = [...files];
@@ -31,7 +32,7 @@ const AddProductPage3 = () => {
 				fd.append('product_id', product_id);
 				fd.append('type', 'image');
 				fd.append('priority', 0);
-				fd.append('gallery', files);
+				fd.append('gallery', files[0]);
 
 				const response = await axios.put('/update_media/gallery', fd);
 				if (response.status == 200) {

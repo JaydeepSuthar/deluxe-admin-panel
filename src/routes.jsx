@@ -8,12 +8,13 @@ import {
 } from 'react-icons/fa';
 
 import { AiFillDashboard } from 'react-icons/ai';
+import { TbLogout } from 'react-icons/tb';
 
 const routes = [
 	{
 		name: 'Dashboard',
 		icon: <AiFillDashboard />,
-		path: '/',
+		path: '/dashboard',
 	},
 	{
 		name: 'Product',
@@ -39,6 +40,11 @@ const routes = [
 		name: 'Banner',
 		icon: <FaPhotoVideo />,
 		path: '/banner',
+	},
+	{
+		name: 'Logout',
+		icon: <TbLogout />,
+		path: '/',
 	},
 ];
 

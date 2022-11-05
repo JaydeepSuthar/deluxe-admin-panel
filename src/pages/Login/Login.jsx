@@ -18,7 +18,7 @@ const LoginPage = (count, setCount) => {
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
 
-	const [email, setEmail] = useState('');
+	// const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [errors, setErrors] = useState({});
 
@@ -41,8 +41,8 @@ const LoginPage = (count, setCount) => {
 	const findFormErrors = () => {
 		const newErrors = {};
 
-		if (!email || email.trim() === '')
-			newErrors.email = `email cannot be empty`;
+		// if (!email || email.trim() === '')
+		// 	newErrors.email = `email cannot be empty`;
 		if (!password || password.trim() === '')
 			newErrors.password = `password cannot be empty`;
 
@@ -55,39 +55,32 @@ const LoginPage = (count, setCount) => {
 		const newErrors = findFormErrors();
 		console.log(newErrors);
 
+		const fd = new FormData();
+		fd.append('password', password);
+
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors);
 		} else {
 			try {
-				let response = await axios.post(
-					'/company/login',
-					{
-						admin_username: email,
-						password: password,
-					},
-					{ withCredentials: true }
-				);
+				let response = await axios.post('authenticate', fd);
 
 				if (response.status === 200) {
 					toast.success(`Logged In Success`);
 					console.log(response.data.data);
 
-					// localStorage.setItem("isLoggedIn", true);
-					localStorage.setItem('company_id', response.data.data.id);
-					localStorage.setItem(
-						'is_super_admin',
-						response.data.data.is_super_admin
-					);
-					localStorage.setItem('logo', response.data.data.logo_url);
+					localStorage.setItem('isLoggedIn', true);
+
+					axios.defaults.headers.common[
+						'Authorization'
+					] = `Bearer ${response.data.access_token}`;
 
 					setAuthenticated(true);
 
-					navigate('/');
+					navigate('/dashboard');
 				} else {
 					localStorage.setItem('isLoggedIn', false);
 					toast.error(response.data.msg);
 					e.preventDefault();
-					dispatch(logOut());
 				}
 			} catch ({ response }) {
 				localStorage.setItem('isLoggedIn', false);
@@ -100,14 +93,14 @@ const LoginPage = (count, setCount) => {
 		<div className='login__page__bg'>
 			<section className='login__card'>
 				<section className='header'>
-					<img className='logo' src={logo} />
+					{/* <img className='logo' src={logo} /> */}
 					{/* <p className="title" >Sign In</p> */}
 				</section>
 
 				{/* Backup */}
 				<div className='login__form'>
 					<form method='POST' className='form' autoComplete='off'>
-						<div className='form__input'>
+						{/* <div className='form__input'>
 							<label htmlFor='emailInput'>Email address</label>
 							<input
 								style={{
@@ -128,7 +121,8 @@ const LoginPage = (count, setCount) => {
 									email cannot be empty
 								</small>
 							)}
-						</div>
+						</div> */}
+
 						<div className='form__input'>
 							<label htmlFor='passwordInput'>Password</label>
 							<input
@@ -138,7 +132,7 @@ const LoginPage = (count, setCount) => {
 									height: '40px',
 									fontSize: 'small',
 								}}
-								type='password'
+								type='number'
 								name='password'
 								id='password'
 								placeholder='Enter your password'
@@ -151,7 +145,7 @@ const LoginPage = (count, setCount) => {
 								</small>
 							)}
 						</div>
-						<div id='checkbox__form__input' className='form__input'>
+						{/* <div id='checkbox__form__input' className='form__input'>
 							<input
 								type='checkbox'
 								name='checkbox'
@@ -165,7 +159,7 @@ const LoginPage = (count, setCount) => {
 							>
 								Show Password
 							</label>
-						</div>
+						</div> */}
 						<div className='form__input'>
 							<button
 								className='login__btn'

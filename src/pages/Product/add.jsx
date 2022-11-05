@@ -1,6 +1,6 @@
 import { Button, Image } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 
@@ -45,48 +45,50 @@ const ProductValidation = Yup.object().shape({
 
 const AddProduct = () => {
 	// const [files, setFiles] = useState([]);
-	const [files, setFiles] = useState({});
+	const [files, setFiles] = useState([]);
 	const [filesUrl, setFilesUrl] = useState('');
 	const [product_id, setProduct_id] = useState('');
 
 	const navigate = useNavigate();
-	useEffect(() => {
-		let fd2 = new FormData();
-		fd2.append('product_id', '5a7ba345-b614-45cd-bb2a-aa5d82daf590');
-		fd2.append('type', 'image');
-		fd2.append('priority', 0);
-		fd2.append('banner', files);
 
-		const api = async () => {
-			const bannerApi = await axios.put('/update_media/banner', fd2);
-			if (bannerApi.status == 200) {
-				console.log(bannerApi);
-				alert(JSON.stringify(bannerApi, null, 2));
-				// navigate('/product/add2');
-			} else {
-				alert(JSON.stringify(bannerApi, null, 2));
-			}
-		};
-		api();
-	}, [files]);
+	// useEffect(() => {
+	// 	let fd2 = new FormData();
+	// 	fd2.append('product_id', '5a7ba345-b614-45cd-bb2a-aa5d82daf590');
+	// 	fd2.append('type', 'image');
+	// 	fd2.append('priority', 0);
+	// 	fd2.append('banner', files);
 
-	// const {
-	// 	data: categoryList,
-	// 	error: categoryError,
-	// 	isLoading,
-	// } = useFetch('/get_category_list');
+	// 	const api = async () => {
+	// 		const bannerApi = await axios.put('/update_media/banner', fd2);
+	// 		if (bannerApi.status == 200) {
+	// 			console.log(bannerApi);
+	// 			alert(JSON.stringify(bannerApi, null, 2));
+	// 			// navigate('/product/add2');
+	// 		} else {
+	// 			alert(JSON.stringify(bannerApi, null, 2));
+	// 		}
+	// 	};
+	// 	api();
+	// }, [files]);
 
-	// if (isLoading) return <h1>Loading...</h1>;
-	// if (categoryError) return <h1>Error</h1>;
+	const {
+		data: category,
+		error: categoryError,
+		isLoading,
+	} = useFetch('/get_category_list');
+
+	if (isLoading) return <h1>Loading...</h1>;
+	if (categoryError) return <h1>Error</h1>;
+
 	const categoryList = category.cat_list.map((item) => item.name);
 
-	const handleProductImage = (files) => {
-		// const filesArr = [...files];
+	const handleProductImage = (file) => {
+		const filesArr = [...files, file];
 
 		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
-		// setFiles(filesArr);
-		setFilesUrl(URL.createObjectURL(files));
-		setFiles(files);
+		setFiles(filesArr);
+		setFilesUrl(URL.createObjectURL(file));
+		// setFiles(files);
 	};
 
 	const handleDragEnd = (event) => {
@@ -103,12 +105,11 @@ const AddProduct = () => {
 			});
 		}
 	};
+
 	const handleSubmit = async (values) => {
 		try {
 			// console.log('hello 111');
-			const response = await axios.get(
-				'http://139.59.22.201/test_api/get_new_product_id'
-			);
+			const response = await axios.get('get_new_product_id');
 			// console.log('hello', response);
 
 			if (response.status == 200) {
@@ -131,36 +132,44 @@ const AddProduct = () => {
 				fd.append('kilo', values.kilo);
 				fd.append('gram', values.gram);
 				fd.append('youtube', values.youtube);
-				const product1 = await axios.post(
-					'http://139.59.22.201/test_api/init_product',
-					fd
-				);
+
+				const product1 = await axios.post('init_product', fd);
+
 				if (product1.status == 200) {
 					console.log(product1);
 					let fd2 = new FormData();
+
 					fd2.append('product_id', response.data.id);
 					fd2.append('type', 'image');
 					fd2.append('priority', 0);
-					fd2.append('banner', files);
 
-					const bannerApi = await axios.put(
-						'/update_media/banner',
-						fd2
-					);
-					if (bannerApi.status == 200) {
-						console.log(bannerApi);
-						alert(JSON.stringify(bannerApi, null, 2));
-						navigate('/product/add2');
-					} else {
-						alert(JSON.stringify(bannerApi, null, 2));
+					for (let i = 0; i < files.length; i++) {
+						fd2.append('banner', files[i]);
+						const bannerApi = await axios.put(
+							'/update_media/banner',
+							fd2
+						);
+
+						if (bannerApi.status == 200) {
+							console.log(bannerApi);
+							// alert(JSON.stringify(bannerApi, null, 2));
+							navigate('/product/add2');
+						} else {
+							console.log(`banner api`);
+							// alert(JSON.stringify(bannerApi, null, 2));
+							console.error(bannerApi);
+						}
 					}
 				} else {
+					console.log(`product 1`);
 					alert(JSON.stringify(product1, null, 2));
 				}
 			} else {
+				console.log(`else`);
 				alert(JSON.stringify(response, null, 2));
 			}
 		} catch (error) {
+			console.log(`catch`);
 			alert(JSON.stringify(error, null, 2));
 		}
 		// setSubmitting(false);
@@ -168,6 +177,50 @@ const AddProduct = () => {
 
 	return (
 		<div>
+			<h1>Product level 1</h1>
+			<Formik>
+				{({ errors, touched, isSubmitting, resetForm }) => (
+					<Form>
+						<div className='tw-flex lg:tw-flex-row tw-flex-col tw-gap-4'>
+							<div className='upload-area tw-w-full lg:tw-w-96 lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
+								Add Product Image
+								<input
+									type='file'
+									className='tw-opacity-0 tw-absolute tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-cursor-pointer'
+									multiple
+									onChange={(e) => {
+										handleProductImage(e.target.files[0]);
+									}}
+								/>
+							</div>
+
+							<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row flex-wrap tw-gap-4 tw-p-3'>
+								<DndContext
+									collisionDetection={closestCenter}
+									onDragEnd={handleDragEnd}
+								>
+									<SortableContext
+										items={files}
+										strategy={horizontalListSortingStrategy}
+									>
+										{files.map((item, idx) => {
+											let itemToURL =
+												URL.createObjectURL(item);
+											return (
+												<SortableItem
+													key={itemToURL}
+													id={item}
+													src={itemToURL}
+												/>
+											);
+										})}
+									</SortableContext>
+								</DndContext>
+							</div>
+						</div>
+					</Form>
+				)}
+			</Formik>{' '}
 			<Formik
 				initialValues={{
 					product_name: '',
@@ -192,10 +245,8 @@ const AddProduct = () => {
 			>
 				{({ errors, touched, isSubmitting, resetForm }) => (
 					<Form>
-						<h1>Product level 1</h1>
-
 						<div className='tw-flex lg:tw-flex-row tw-flex-col tw-gap-4'>
-							<div className='upload-area tw-w-full lg:tw-w-96 lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
+							{/* <div className='upload-area tw-w-full lg:tw-w-96 lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
 								Add Product Image
 								<input
 									type='file'
@@ -206,23 +257,17 @@ const AddProduct = () => {
 									}}
 								/>
 							</div>
-
+ */}
 							<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row flex-wrap tw-gap-4 tw-p-3'>
-								<DndContext
+								{/* <DndContext
 									collisionDetection={closestCenter}
 									onDragEnd={handleDragEnd}
 								>
-									{/* <SortableContext
+									<SortableContext
 										items={files}
 										strategy={horizontalListSortingStrategy}
-									> */}
-									<img
-										src={filesUrl}
-										width={'100px'}
-										height={'100px'}
-										alt=''
-									/>
-									{/* {files.map((item, idx) => {
+									>
+										{files.map((item, idx) => {
 											let itemToURL =
 												URL.createObjectURL(item);
 											return (
@@ -232,9 +277,10 @@ const AddProduct = () => {
 													src={itemToURL}
 												/>
 											);
-										})} */}
-									{/* </SortableContext> */}
-								</DndContext>
+										})}
+									</SortableContext>
+								</DndContext> */}
+								{/* <SorttableImageMemo /> */}
 							</div>
 						</div>
 						<div className='product-form tw-flex-1'>
@@ -540,7 +586,7 @@ const AddProduct = () => {
 	);
 };
 
-const SortableItem = (props) => {
+const SortableItem = React.memo((props) => {
 	const { attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({ id: props.id });
 
@@ -556,6 +602,6 @@ const SortableItem = (props) => {
 			</div>
 		</>
 	);
-};
+});
 
 export default AddProduct;

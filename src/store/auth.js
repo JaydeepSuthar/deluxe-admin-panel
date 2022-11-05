@@ -9,7 +9,7 @@ const authStore = (set) => ({
 const useAuthStore = create(
 	devtools(persist(authStore), {
 		name: 'Auth',
-		getStorage: () => localStorage,
+		getStorage: () => sessionStorage,
 	})
 );
 

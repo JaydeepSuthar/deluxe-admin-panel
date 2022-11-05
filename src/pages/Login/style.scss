@@ -14,7 +14,7 @@ $shadow_color: hsl(215deg 14% 70%);
 // $card_width: 500px;
 $card_width: 420px;
 // $card_height: 650px;
-$card_height: 500px;
+$card_height: 300px;
 
 // $border_radius: 0.875em;
 $border_radius: 1em;
@@ -113,7 +113,7 @@ $border_radius: 1em;
 
 			.login__btn {
 				width: 100%;
-				background: $orange;
+				background: $theme;
 
 				font-size: medium;
 				font-weight: 500;
@@ -126,6 +126,8 @@ $border_radius: 1em;
 				border-radius: 0.3em;
 				position: relative;
 				bottom: 30px;
+
+				margin-top: 10px;
 
 				&:hover {
 					opacity: 0.9;

@@ -4,6 +4,7 @@ import {
 	arrayMove,
 	SortableContext,
 	verticalListSortingStrategy,
+	horizontalListSortingStrategy,
 	useSortable,
 } from '@dnd-kit/sortable';
 
@@ -79,7 +80,7 @@ const AddBanner = () => {
 			>
 				<SortableContext
 					items={imageArr}
-					strategy={verticalListSortingStrategy}
+					strategy={horizontalListSortingStrategy}
 				>
 					{imageArr.map((item) => (
 						<SortableItem key={item} id={item} />

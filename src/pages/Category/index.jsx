@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Image, Card, Button } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import {
 	BsLightningCharge,
 	BsLightningChargeFill,
@@ -13,8 +14,9 @@ import swal from 'sweetalert';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddCategoryModal from '../../components/model/AddCategoryModal';
+import { useFetch } from '../../hooks';
 
-const delete_category = (name) => {
+const delete_category = (name, revalidate) => {
 	const deleteURL = `delete_category?category_name=${name}`;
 
 	swal({
@@ -30,66 +32,17 @@ const delete_category = (name) => {
 			const response = await axios.get(deleteURL);
 
 			if (response.status == 200) {
-				alert(`Category is Deleted`);
-				window.location.reload();
+				// alert(`Category is Deleted`);
+				// window.location.reload();
+				toast.success(`Category is Deleted`);
+				
+				revalidate();
 			} else {
 				alert(JSON.stringify(response));
 			}
 		}
 	});
 };
-
-const columns = [
-	{
-		name: 'IMAGE',
-		// selector: (row) => row.image,
-		cell: (row) => {
-			let imageURL = `${row.image}`;
-
-			return (
-				<Image
-					src={imageURL}
-					width='80px'
-					height={'80px'}
-					style={{ borderRadius: '25%' }}
-				/>
-			);
-		},
-		// sortable: true,
-		// width: "6em",
-	},
-	{
-		name: 'CATEGORY NAME',
-		selector: (row) => row.name,
-		sortable: true,
-		// wrap: true,
-		// width: "6em",
-	},
-	{
-		name: 'ACTIONS',
-		// selector: (row) => `${row.discount_percentage}%`,
-		cell: (row) => {
-			return (
-				<>
-					{/* <BsPencilSquare
-						color='blue'
-						size={17}
-						onClick={() => alert(`Edit Category`)}
-					/> */}
-
-					<BsTrash
-						color='red'
-						className='mx-3'
-						size={17}
-						onClick={() => delete_category(row.name)}
-					/>
-				</>
-			);
-		},
-		// sortable: true,
-		width: '12em',
-	},
-];
 
 const FilterComponent = ({ filterText, setFilterText, setShow }) => {
 	return (
@@ -116,46 +69,82 @@ const FilterComponent = ({ filterText, setFilterText, setShow }) => {
 };
 const CategoryPage = () => {
 	const [filterText, setFilterText] = useState('');
-	const [data, setData] = useState([]);
 	const [show, setShow] = useState(false);
 
-	useEffect(() => {
-		const apiCall = async () => {
-			try {
-				const response = await axios.get('/get_category_list');
+	const { data, isLoading, error, revalidate } =
+		useFetch('/get_category_list');
 
-				if (response.status == 200) {
-					console.log(
-						'Category api data==>',
-						response?.data?.cat_list
-					);
-					setData(response?.data?.cat_list);
-					// window.location.reload();
-				} else {
-					alert(JSON.stringify(response, null, 2));
-					console.log({ response });
-				}
-			} catch (err) {
-				console.log({ err });
-			}
-		};
-		apiCall();
-	}, []);
+	const columns = [
+		{
+			name: 'IMAGE',
+			// selector: (row) => row.image,
+			cell: (row) => {
+				let imageURL = `${row.image}`;
+
+				return (
+					<Image
+						src={imageURL}
+						width='80px'
+						height={'80px'}
+						style={{ borderRadius: '25%' }}
+					/>
+				);
+			},
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'CATEGORY NAME',
+			selector: (row) => row.name,
+			sortable: true,
+			// wrap: true,
+			// width: "6em",
+		},
+		{
+			name: 'ACTIONS',
+			// selector: (row) => `${row.discount_percentage}%`,
+			cell: (row) => {
+				return (
+					<>
+						{/* <BsPencilSquare
+						color='blue'
+						size={17}
+						onClick={() => alert(`Edit Category`)}
+					/> */}
+
+						<BsTrash
+							color='red'
+							className='mx-3'
+							size={17}
+							onClick={() =>
+								delete_category(row.name, revalidate)
+							}
+						/>
+					</>
+				);
+			},
+			// sortable: true,
+			width: '12em',
+		},
+	];
 
 	const addCategory = async (values) => {
 		console.log({ values });
 
 		const fd = new FormData();
 
-		fd.append('category_name', values.category_name);
 		fd.append('catimg', values.catimg[0]);
+		fd.append('category_name', values.category_name);
+		fd.append('category_name', values.category_name);
+		fd.append('catimg', values.catimg);
 
 		try {
 			const response = await axios.post('/add_category', fd);
 			console.log('category add=>', response);
 			if (response.status == 200) {
 				console.log('Category api data==>', response);
-				window.location.reload();
+				// window.location.reload();
+				revalidate();
 			} else {
 				alert(JSON.stringify(response, null, 2));
 				console.log({ response });
@@ -166,8 +155,17 @@ const CategoryPage = () => {
 		setShow(false);
 	};
 
+	if (isLoading) return <h1>Loading...</h1>;
+		if (error) {
+		if (error?.response?.status == 401)
+			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
+
+		return <h1>Error Occur</h1>;
+	}
+;
+
 	// const filteredData = category.cat_list.filter(
-	const filteredData = data.filter(
+	const filteredData = data?.cat_list?.filter(
 		(item) =>
 			item.name &&
 			item.name.toLowerCase().includes(filterText.toLowerCase())

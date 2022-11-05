@@ -17,9 +17,7 @@ const AddBannerModal = ({ show, setShow, submitHandler }) => {
 			return;
 		}
 
-		submitHandler({
-			banner: URL.createObjectURL(file),
-		});
+		submitHandler(file);
 	};
 
 	return (
@@ -31,7 +29,7 @@ const AddBannerModal = ({ show, setShow, submitHandler }) => {
 				<Modal.Body>
 					<Form onSubmit={handleSubmit}>
 						<Form.Group controlId='file' className='mb-3'>
-							<Form.Label>Category Image</Form.Label>
+							<Form.Label>Banner Image</Form.Label>
 							<Form.Control
 								type='file'
 								accept='images/*'

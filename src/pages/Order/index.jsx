@@ -206,7 +206,12 @@ const OrderPage = () => {
 
 	if (isLoading) return <h1>Loading...</h1>;
 
-	if (error) return <h1>Error Occur</h1>;
+	if (error) {
+		if (error?.response?.status == 401)
+			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
+
+		return <h1>Error Occur</h1>;
+	}
 
 	console.log({ data });
 

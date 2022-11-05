@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Image, Card, Button } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import {
 	BsBagPlusFill,
 	BsLightningCharge,
@@ -10,6 +11,7 @@ import {
 } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import { SWRConfig } from 'swr';
 
 import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
@@ -19,15 +21,14 @@ import { useFetch } from '../../hooks';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
-const toggle_trending = async (id) => {
-	const url = `http://139.59.22.201/dashboard/product_toogle_trending?product_id=${id}`;
+const toggle_trending = async (id, revalidate) => {
+	const url = `product_toogle_trending?product_id=${id}`;
 
 	try {
 		const response = await axios.get(url);
 
 		if (response.status == 200) {
-			alert(`Trending`);
-			window.location.reload();
+			revalidate();
 		} else {
 			console.log({ response });
 		}
@@ -36,7 +37,7 @@ const toggle_trending = async (id) => {
 	}
 };
 
-const delete_product = (id) => {
+const delete_product = (id, revalidate) => {
 	swal({
 		title: 'Are you sure?',
 		text: 'Once deleted, you cannot not revert it',
@@ -47,14 +48,15 @@ const delete_product = (id) => {
 		if (value) {
 			// alert(`Product is Deleted`);
 
-			const url = `http://139.59.22.201/dashboard/delete_product?product_id=${id}`;
+			const url = `delete_product?product_id=${id}`;
 
 			try {
 				const response = await axios.get(url);
 
 				if (response.status == 200) {
-					alert(`Prodduct Deleted Successfully`);
-					window.location.reload();
+					toast.success(`Prodduct Deleted Successfully`);
+					revalidate();
+					// window.location.reload();
 				} else {
 					console.log({ response });
 				}
@@ -100,7 +102,9 @@ const ProductPage = () => {
 	const [stockModal, setStockModal] = useState({});
 	const [show, setShow] = useState(false);
 
-	const { data, error, isLoading } = useFetch('/product/showcase?page=1');
+	const { data, error, isLoading, revalidate } = useFetch(
+		'/product/showcase?page=1'
+	);
 
 	// TODO: API calling demo
 	// useEffect(() => {
@@ -179,7 +183,9 @@ const ProductPage = () => {
 				return (
 					<div
 						className='trending'
-						onClick={() => toggle_trending(row.product_id)}
+						onClick={() =>
+							toggle_trending(row.product_id, revalidate)
+						}
 					>
 						{row.isTrending ? (
 							<BsLightningChargeFill color='orange' size='16px' />
@@ -249,7 +255,7 @@ const ProductPage = () => {
 								onClick={() => handleStock(row)}
 							/>
 						</i>
-						<i
+						{/* <i
 							type='button'
 							className='
 								px-6
@@ -277,7 +283,7 @@ const ProductPage = () => {
 								size={17}
 								onClick={() => alert(`Edit Product`)}
 							/>
-						</i>
+						</i> */}
 						<i
 							type='button'
 							className='
@@ -305,7 +311,9 @@ const ProductPage = () => {
 								color='red'
 								className='mx-3'
 								size={17}
-								onClick={() => delete_product(row.product_id)}
+								onClick={() =>
+									delete_product(row.product_id, revalidate)
+								}
 							/>
 						</i>
 					</>
@@ -319,30 +327,31 @@ const ProductPage = () => {
 
 	if (isLoading) return <h1>Loading...</h1>;
 
-	if (error) return <h1>Error Occur</h1>;
+	if (error) {
+		if (error?.response?.status == 401)
+			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
+
+		return <h1>Error Occur</h1>;
+	}
 
 	console.log({ data });
 
-
 	let filteredData = [];
 
-		filteredData = data?.response?.filter(
-			(item) =>
-				(item.title &&
-					item.title
-						.toLowerCase()
-						.includes(filterText.toLowerCase())) ||
-				(item.category &&
-					item.category
-						.toLowerCase()
-						.includes(filterText.toLowerCase()))
-		);
+	filteredData = data?.response?.filter(
+		(item) =>
+			(item.title &&
+				item.title.toLowerCase().includes(filterText.toLowerCase())) ||
+			(item.category &&
+				item.category.toLowerCase().includes(filterText.toLowerCase()))
+	);
 
 	const handleStock = (row) => {
 		console.log('hello', row);
 		setStockModal(row);
 		setShow(true);
 	};
+
 	const submitHandler = async (values) => {
 		console.log('values ==>', values);
 	};
