@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './style.scss'; // main file :: Development
 // import "./style.min.css"; // minified file :: Production
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/logo.png';
 
@@ -15,6 +15,8 @@ import useLoaderStore from '../../store/loader';
 const LoginPage = (count, setCount) => {
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
+	const navigate = useNavigate();
+
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
 
@@ -22,9 +24,7 @@ const LoginPage = (count, setCount) => {
 	const [password, setPassword] = useState('');
 	const [errors, setErrors] = useState({});
 
-	const navigate = useNavigate();
-
-	const companyName = 'Aatmiya';
+	const companyName = 'Deluxe';
 	const passwordInput = useRef(null);
 	const emailInput = useRef(null);
 
@@ -52,6 +52,8 @@ const LoginPage = (count, setCount) => {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
+		setLoading(true);
+
 		const newErrors = findFormErrors();
 		console.log(newErrors);
 
@@ -70,12 +72,18 @@ const LoginPage = (count, setCount) => {
 
 					localStorage.setItem('isLoggedIn', true);
 
+					localStorage.setItem(
+						'access_token',
+						response.data.access_token
+					);
+
 					axios.defaults.headers.common[
 						'Authorization'
 					] = `Bearer ${response.data.access_token}`;
 
 					setAuthenticated(true);
 
+					setLoading(false);
 					navigate('/dashboard');
 				} else {
 					localStorage.setItem('isLoggedIn', false);
@@ -87,6 +95,8 @@ const LoginPage = (count, setCount) => {
 				toast.error(response.data.msg);
 			}
 		}
+
+		setLoading(false);
 	};
 
 	return (

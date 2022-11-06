@@ -164,7 +164,7 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 					/>
 
 					<Button
-						className='tw-bg-indigo-700 hover:tw-bg-indigo-600'
+						className='tw-bg-green-700 hover:tw-bg-green-600'
 						size='sm'
 					>
 						Add Product

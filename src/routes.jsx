@@ -44,7 +44,7 @@ const routes = [
 	{
 		name: 'Logout',
 		icon: <TbLogout />,
-		path: '/',
+		path: '/logout',
 	},
 ];
 

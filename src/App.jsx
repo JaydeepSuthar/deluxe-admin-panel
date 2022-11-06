@@ -1,5 +1,6 @@
 import { Toaster } from 'react-hot-toast';
 import {
+	Navigate,
 	Outlet,
 	Route,
 	Routes,
@@ -38,9 +39,16 @@ const ProtectedRoute = () => {
 	const navigate = useNavigate();
 
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+	const access_token = localStorage.getItem('access_token');
 
 	useEffect(() => {
-		if (!isAuthenticated) {
+		if (access_token) {
+			axios.defaults.headers.common[
+				'Authorization'
+			] = `Bearer ${access_token}`;
+		}
+
+		if (!isAuthenticated || !access_token) {
 			navigate('/');
 		}
 	});
@@ -83,6 +91,7 @@ const App = () => {
 						</Route>
 					</Route>
 				</Route>
+				<Route path='logout' element={<Logout />} />
 				<Route path='unauthorized' element={<LoginPage />} />
 				<Route path='*' element={<NotFound />} />
 				<Route path='demo' element={<InvoiceBill />} />
@@ -107,6 +116,12 @@ const SidebarLayout = ({ routes }) => {
 			</div>
 		</>
 	);
+};
+
+const Logout = () => {
+	localStorage.removeItem('access_token');
+
+	return <Navigate to='/' />;
 };
 
 export default App;
