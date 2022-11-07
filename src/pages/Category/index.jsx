@@ -15,6 +15,7 @@ import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddCategoryModal from '../../components/model/AddCategoryModal';
 import { useFetch } from '../../hooks';
+import useLoaderStore from '../../store/loader';
 
 const delete_category = (name, revalidate) => {
 	const deleteURL = `delete_category?category_name=${name}`;
@@ -35,7 +36,7 @@ const delete_category = (name, revalidate) => {
 				// alert(`Category is Deleted`);
 				// window.location.reload();
 				toast.success(`Category is Deleted`);
-				
+
 				revalidate();
 			} else {
 				alert(JSON.stringify(response));
@@ -68,6 +69,8 @@ const FilterComponent = ({ filterText, setFilterText, setShow }) => {
 	);
 };
 const CategoryPage = () => {
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	const [filterText, setFilterText] = useState('');
 	const [show, setShow] = useState(false);
 
@@ -129,6 +132,8 @@ const CategoryPage = () => {
 	];
 
 	const addCategory = async (values) => {
+		setLoading(true);
+
 		console.log({ values });
 
 		const fd = new FormData();
@@ -144,6 +149,7 @@ const CategoryPage = () => {
 			if (response.status == 200) {
 				console.log('Category api data==>', response);
 				// window.location.reload();
+				setLoading(false);
 				revalidate();
 			} else {
 				alert(JSON.stringify(response, null, 2));
@@ -153,17 +159,16 @@ const CategoryPage = () => {
 			alert(JSON.stringify(error, null, 2));
 		}
 		setShow(false);
+		setLoading(false);
 	};
 
 	if (isLoading) return <h1>Loading...</h1>;
-		if (error) {
+	if (error) {
 		if (error?.response?.status == 401)
 			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
 
 		return <h1>Error Occur</h1>;
 	}
-;
-
 	// const filteredData = category.cat_list.filter(
 	const filteredData = data?.cat_list?.filter(
 		(item) =>

@@ -82,8 +82,8 @@ const AddProduct = () => {
 
 	const categoryList = category.cat_list.map((item) => item.name);
 
-	const handleProductImage = (file) => {
-		const filesArr = [...files, file];
+	const handleProductImage = (newFile) => {
+		const filesArr = [...files, ...newFile];
 
 		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
 		setFiles(filesArr);
@@ -141,9 +141,9 @@ const AddProduct = () => {
 
 					fd2.append('product_id', response.data.id);
 					fd2.append('type', 'image');
-					fd2.append('priority', 0);
 
 					for (let i = 0; i < files.length; i++) {
+						fd2.append('priority', i);
 						fd2.append('banner', files[i]);
 						const bannerApi = await axios.put(
 							'/update_media/banner',
@@ -181,15 +181,16 @@ const AddProduct = () => {
 			<Formik>
 				{({ errors, touched, isSubmitting, resetForm }) => (
 					<Form>
-						<div className='tw-flex lg:tw-flex-row tw-flex-col tw-gap-4'>
-							<div className='upload-area tw-w-full lg:tw-w-96 lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
+						<div className='tw-flex tw-flex-col tw-gap-4'>
+							<div className='upload-area tw-w-full lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
 								Add Product Image
 								<input
 									type='file'
 									className='tw-opacity-0 tw-absolute tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-cursor-pointer'
+									accept='image/*,video/*'
 									multiple
 									onChange={(e) => {
-										handleProductImage(e.target.files[0]);
+										handleProductImage(e.target.files);
 									}}
 								/>
 							</div>
@@ -598,7 +599,19 @@ const SortableItem = React.memo((props) => {
 	return (
 		<>
 			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-				<Image src={props.src} width='100px' height='100px' />
+				{props.id?.type?.split('/')[0] == 'video' ? (
+					<video
+						width={'100px'}
+						height={'100px'}
+						muted
+						controls
+						playsInline
+					>
+						<source src={props.src} type={props.id?.type} />
+					</video>
+				) : (
+					<Image src={props.src} width='100px' height='100px' />
+				)}
 			</div>
 		</>
 	);

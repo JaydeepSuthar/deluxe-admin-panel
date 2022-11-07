@@ -18,7 +18,7 @@ const TextInvoice = () => {
 											scope='col'
 											class='text-sm font-medium text-gray-900 px-6 py-4 text-left'
 										>
-											OESCRIPTION
+											DESCRIPTION
 										</th>
 										<th
 											scope='col'
@@ -38,35 +38,35 @@ const TextInvoice = () => {
 										>
 											RATE
 										</th>
-										<th
+										{/* <th
 											scope='col'
 											class='text-sm font-medium text-gray-900 px-6 py-4 text-left'
 										>
 											GST(%)
-										</th>
-										<th
+										</th> */}
+										{/* <th
 											scope='col'
 											class='text-sm font-medium text-gray-900 px-6 py-4 text-left'
 										>
 											GST
-										</th>
+										</th> */}
 										<th
 											scope='col'
 											class='text-sm font-medium text-gray-900 px-6 py-4 text-left'
 										>
-											TOTLE
+											TOTAL
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr class='border-b'>
 										<div className='flex'>
-											<img
+											{/* <img
 												src={product}
 												alt=''
 												srcset=''
 												style={{ width: '10%' }}
-											/>
+											/> */}
 											<div className='flex-col'>
 												<p className='mt-4 px-6'>
 													Washing Machine Cleaner
@@ -97,12 +97,12 @@ const TextInvoice = () => {
 
 									<tr class='border-b'>
 										<div className='flex'>
-											<img
+											{/* <img
 												src={product}
 												alt=''
 												srcset=''
 												style={{ width: '10%' }}
-											/>
+											/> */}
 											<div className='flex-col'>
 												<p className='mt-4 px-6'>
 													Washing Machine Cleaner
@@ -133,12 +133,12 @@ const TextInvoice = () => {
 
 									<tr class='border-b'>
 										<div className='flex'>
-											<img
+											{/* <img
 												src={product}
 												alt=''
 												srcset=''
 												style={{ width: '10%' }}
-											/>
+											/> */}
 											<div className='flex-col'>
 												<p className='mt-4 px-6'>
 													Washing Machine Cleaner

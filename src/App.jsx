@@ -33,6 +33,7 @@ import InvoiceBill from './components/invoice/invoicebill/InvoiceBill';
 
 import useAuthStore from './store/auth';
 import { useEffect } from 'react';
+import Invoice from './components/invoice2/invoice';
 
 const ProtectedRoute = () => {
 	const location = useLocation();
@@ -66,6 +67,7 @@ const App = () => {
 
 			<Routes>
 				<Route path='/' element={<LoginPage />} />
+				<Route path='/invoice' element={<InvoiceBill />} />
 
 				<Route element={<SidebarLayout routes={routes} />}>
 					<Route element={<ProtectedRoute />}>

@@ -1,49 +1,65 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import useLoaderStore from '../../store/loader';
 
 const AddProductPage3 = () => {
 	// const [files, setFiles] = useState([]);
-	const [files, setFiles] = useState();
+	const navigate = useNavigate();
+
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
+	const [files, setFiles] = useState([]);
 	const [filesUrl, setFilesUrl] = useState();
 	const [product_id, setProduct_id] = useState('');
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		let productId = localStorage.getItem('product_id');
 		setProduct_id(productId);
 	}, []);
 
-	const handleProductImage = (files) => {
-		console.log(files);
-		// const filesArr = [...files];
-		// const file = URL.createObjectURL(files);
-		// const file = files;
-		setFilesUrl(URL.createObjectURL(files));
-		setFiles(files);
+	const handleProductImage = (newFile) => {
+		const filesArr = [...files, ...newFile];
+
+		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
+		setFiles(filesArr);
+		// setFilesUrl(URL.createObjectURL(file));
+		// setFiles(files);
 	};
 
 	const handleSubmit = async () => {
+		setLoading(true);
+
 		if (files) {
 			try {
 				let fd = new FormData();
 				fd.append('product_id', product_id);
-				fd.append('type', 'image');
-				fd.append('priority', 0);
-				fd.append('gallery', files[0]);
 
-				const response = await axios.put('/update_media/gallery', fd);
-				if (response.status == 200) {
-					console.log(response);
-				} else {
-					alert(JSON.stringify(response, null, 2));
+				for (let i = 0; i < files.length; i++) {
+					let fileType = files[i].type?.split('/')[0];
+					fd.append('type', fileType);
+					fd.append('priority', i);
+					fd.append('gallery', files[i]);
+
+					const response = await axios.put(
+						'/update_media/gallery',
+						fd
+					);
+					if (response.status == 200) {
+						console.log(response);
+					} else {
+						console.log(response);
+						// toast.error(``)
+					}
 				}
 			} catch (error) {
 				alert(JSON.stringify(error, null, 2));
 			}
 		}
+
 		swal({
 			title: 'Product successful added',
 			text: 'Your product is successful inserted',
@@ -53,27 +69,30 @@ const AddProductPage3 = () => {
 		}).then(async (value) => {
 			if (value) {
 				const publicProduct = await axios.put(`/publish/${product_id}`);
+				setLoading(false);
 				navigate('/product');
 			}
 		});
+		setLoading(false);
 	};
 
 	return (
 		<>
-			<div className='upload-area tw-w-full lg:tw-w-96 lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
-				Add Product Image
+			<div className='upload-area tw-w-full lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
+				Add Gallary Image
 				<input
 					type='file'
 					className='tw-opacity-0 tw-absolute tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-cursor-pointer'
 					multiple
+					accept='image/*,video/*'
 					onChange={(e) => {
 						// handleProductImage(e.target.files);
-						handleProductImage(e.target.files[0]);
+						handleProductImage(e.target.files);
 					}}
 				/>
 			</div>
 
-			<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row tw-gap-4 tw-p-3'>
+			<div className='image-preview tw-h-full tw-w-full tw-mb-2 tw-flex tw-flex-row tw-flex-wrap tw-gap-4 tw-p-3'>
 				{/* {files.map((item, idx) => {
 					let itemToURL = URL.createObjectURL(item);
 					return (
@@ -85,14 +104,33 @@ const AddProductPage3 = () => {
 						/>
 					);
 				})} */}
-				{files && (
-					<img
-						src={filesUrl}
-						width={'100px'}
-						height={'100px'}
-						alt=''
-					/>
-				)}
+
+				{files?.length > 0 &&
+					files.map((item, idx) => {
+						let itemToURL = URL.createObjectURL(item);
+
+						if (item?.type?.split('/')[0] == 'video') {
+							return (
+								<video
+									width={'300px'}
+									height={'300px'}
+									muted
+									controls
+									playsInline
+								>
+									<source src={itemToURL} type={item?.type} />
+								</video>
+							);
+						}
+
+						return (
+							<img
+								src={itemToURL}
+								width={'300px'}
+								height={'300px'}
+							/>
+						);
+					})}
 			</div>
 			<div>
 				<Button

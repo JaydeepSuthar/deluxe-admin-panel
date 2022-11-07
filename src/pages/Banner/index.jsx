@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Button, Card, Carousel } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 // import image1 from '../../assets/image-1.jpg';
@@ -9,11 +10,15 @@ import { useNavigate } from 'react-router-dom';
 // import image4 from '../../assets/image-4.jpg';
 import AddBannerModal from '../../components/model/AddBannerModal';
 import { useFetch } from '../../hooks';
+import useLoaderStore from '../../store/loader';
 
 const BANNER_URL = `http://139.59.22.201/api/static/app_banners`;
 
 const BannerPage = () => {
 	const navigate = useNavigate();
+
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	const [show, setShow] = useState(false);
 	const [index, setIndex] = useState(0);
 
@@ -25,6 +30,7 @@ const BannerPage = () => {
 	};
 
 	const addBanner = async (value) => {
+		setLoading(true);
 		console.log(value);
 
 		const fd = new FormData();
@@ -36,23 +42,23 @@ const BannerPage = () => {
 		const response = await axios.post('/upload_app_banner/slider', fd);
 
 		if (response.status == 200) {
-			alert(`Banner Added`);
+			toast.success(`Banner Added`);
 			revalidate();
+			setLoading(false);
 		} else console.log(response);
 
 		setShow(false);
+
+		setLoading(false);
 	};
 
 	if (isLoading) return <h1>Loading...</h1>;
-		if (error) {
+	if (error) {
 		if (error?.response?.status == 401)
 			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
 
 		return <h1>Error Occur</h1>;
 	}
-;
-
-
 	return (
 		<>
 			<h1>Banner Page</h1>

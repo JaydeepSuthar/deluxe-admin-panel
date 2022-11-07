@@ -18,16 +18,20 @@ import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddStockModal from '../../components/model/AddStockModal';
 import { useFetch } from '../../hooks';
+import useLoaderStore from '../../store/loader';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
-const toggle_trending = async (id, revalidate) => {
+const toggle_trending = async (id, revalidate, setLoading) => {
+	setLoading(true);
+
 	const url = `product_toogle_trending?product_id=${id}`;
 
 	try {
 		const response = await axios.get(url);
 
 		if (response.status == 200) {
+			setLoading(false);
 			revalidate();
 		} else {
 			console.log({ response });
@@ -35,9 +39,13 @@ const toggle_trending = async (id, revalidate) => {
 	} catch (err) {
 		console.log({ err });
 	}
+
+	setLoading(false);
 };
 
-const delete_product = (id, revalidate) => {
+const delete_product = (id, revalidate, setLoading) => {
+	setLoading(true);
+
 	swal({
 		title: 'Are you sure?',
 		text: 'Once deleted, you cannot not revert it',
@@ -55,6 +63,7 @@ const delete_product = (id, revalidate) => {
 
 				if (response.status == 200) {
 					toast.success(`Prodduct Deleted Successfully`);
+					setLoading(false);
 					revalidate();
 					// window.location.reload();
 				} else {
@@ -65,6 +74,8 @@ const delete_product = (id, revalidate) => {
 			}
 		}
 	});
+
+	setLoading(false);
 };
 
 const FilterComponent = ({ filterText, setFilterText }) => {
@@ -81,7 +92,7 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 					/>
 
 					<Button
-						className='tw-bg-green-700 hover:tw-bg-green-600'
+						className='tw-bg-green-700 hover:tw-bg-green-600 active:tw-bg-green-600 focus:tw-bg-green-600'
 						size='sm'
 						onClick={() => {
 							navigate('/product/add');
@@ -97,6 +108,8 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 };
 
 const ProductPage = () => {
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	const [filterText, setFilterText] = useState('');
 	// const [data, setData] = useState([]);
 	const [stockModal, setStockModal] = useState({});
@@ -184,7 +197,11 @@ const ProductPage = () => {
 					<div
 						className='trending'
 						onClick={() =>
-							toggle_trending(row.product_id, revalidate)
+							toggle_trending(
+								row.product_id,
+								revalidate,
+								setLoading
+							)
 						}
 					>
 						{row.isTrending ? (
@@ -238,9 +255,9 @@ const ProductPage = () => {
 								uppercase
 								rounded
 								shadow-md
-								hover:bg-blue-700 hover:shadow-lg
-								focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-								active:bg-blue-800 active:shadow-lg
+								hover:bg-green-700 hover:shadow-lg
+								focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0
+								active:bg-green-800 active:shadow-lg
 								transition
 								duration-150
 								ease-in-out'
@@ -312,7 +329,11 @@ const ProductPage = () => {
 								className='mx-3'
 								size={17}
 								onClick={() =>
-									delete_product(row.product_id, revalidate)
+									delete_product(
+										row.product_id,
+										revalidate,
+										setLoading
+									)
 								}
 							/>
 						</i>
