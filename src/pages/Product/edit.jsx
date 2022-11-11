@@ -54,23 +54,26 @@ const EditProduct = () => {
 
 	const [show, setShow] = useState(false);
 
-	console.log({ location });
-
-	const productData = {
-		...location.state,
-		product_name: location.state?.title,
-	};
+	// const productData = {
+	// 	...location.state,
+	// 	product_name: location.state?.title,
+	// };
 
 	const {
 		data: category,
 		error: categoryError,
-		isLoading,
+		isLoading: categoryLoading,
 	} = useFetch('/get_category_list');
 
-	if (isLoading) return <h1>Loading...</h1>;
-	if (categoryError) return <h1>Error</h1>;
-
-	const categoryList = category.cat_list.map((item) => item.name);
+	const { data, error, isLoading } = useFetch(
+		`/product/desc/${location.state.product_id}`,
+		{
+			revalidateOnFocus: true,
+			revalidateOnMount: true,
+			revalidateOnReconnect: true,
+			revalidateIfStale: true,
+		}
+	);
 
 	const handleProductImage = (newFile) => {
 		const filesArr = [...files, ...newFile];
@@ -108,13 +111,20 @@ const EditProduct = () => {
 		fd.append('mrp', values.mrp);
 		fd.append('cartoon', values.cartoon);
 		fd.append('stock', values.stock);
+		fd.append('dimensions', values.dimensions);
+		fd.append('weight', values.weight);
+		// fd.append('gram', values.gram);
+		fd.append('youtube', values.youtube);
 
 		try {
 			const response = await axios.post('/product/update', fd);
 
-			if (response.status == 200)
+			if (response.status == 200) {
 				toast.success(`Product Updated Successfully`);
-			else console.error(response);
+				navigate('/product/edit2', {
+					state: data?.response,
+				});
+			} else console.error(response);
 		} catch (err) {
 			console.log(`Err`);
 			console.error(err);
@@ -122,6 +132,26 @@ const EditProduct = () => {
 
 		// setSubmitting(false);
 	};
+
+	if (categoryLoading) return <h1>Loading Category</h1>;
+	if (categoryError) return <h1>Error in Category</h1>;
+
+	if (isLoading) return <h1>Loading Product Details</h1>;
+	if (error) return <h1>Error while Fetching Product Data</h1>;
+
+	const splitedWeight = data?.response?.weight.toString().split('.');
+
+	const productData = {
+		...data?.response,
+		product_name: data?.response?.title,
+		youtube: data?.response?.youtube_link,
+		// kilo: splitedWeight[0],
+		// gram: splitedWeight[1],
+	};
+
+	const categoryList = category.cat_list.map((item) => item.name);
+
+	console.log({ productData });
 
 	return (
 		<>
@@ -442,27 +472,27 @@ const EditProduct = () => {
 
 									<div className=''>
 										<label
-											htmlFor='kilo'
+											htmlFor='weight'
 											className='mt-3'
 											style={{
 												fontWeight: '600',
 												color: 'hsl(0deg 0% 50%)',
 											}}
 										>
-											Kilo
+											Weight
 										</label>
 										<Field
-											name='kilo'
+											name='weight'
 											className={
 												'form-control' +
-												(errors.kilo && touched.kilo
+												(errors.weight && touched.weight
 													? ' is-invalid'
 													: '')
 											}
 											type='number'
 										/>
 									</div>
-									<div className=''>
+									{/* <div className=''>
 										<label
 											htmlFor='gram'
 											className='mt-3'
@@ -483,7 +513,7 @@ const EditProduct = () => {
 											}
 											type='number'
 										/>
-									</div>
+									</div> */}
 
 									<div className=''>
 										<label

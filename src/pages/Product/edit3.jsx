@@ -2,13 +2,16 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import useLoaderStore from '../../store/loader';
+
+const BASE_URL = 'http://139.59.22.201/api/static/product';
 
 const EditProductPage3 = () => {
 	// const [files, setFiles] = useState([]);
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
@@ -17,8 +20,10 @@ const EditProductPage3 = () => {
 	const [product_id, setProduct_id] = useState('');
 
 	useEffect(() => {
-		let productId = localStorage.getItem('product_id');
-		setProduct_id(productId);
+		setProduct_id(location.state?.product_id);
+		setFiles(location.state?.gallery);
+
+		console.log(location.state?.gallery);
 	}, []);
 
 	const handleProductImage = (newFile) => {
@@ -76,6 +81,18 @@ const EditProductPage3 = () => {
 		setLoading(false);
 	};
 
+	const delete_gallery_media = async (media) => {
+		const url = `/delete_media/${media?.media_type}?media_id=${media?.id}&product_id=${location.state.product_id}`;
+
+		const response = await axios(url);
+
+		if (response.status == 200) {
+			toast.success(`${media?.media_type} successfully removed`);
+		} else {
+			console.log(response);
+		}
+	};
+
 	return (
 		<>
 			<div className='upload-area tw-w-full lg:tw-h-72 tw-h-48 tw-mt-7 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
@@ -107,27 +124,46 @@ const EditProductPage3 = () => {
 
 				{files?.length > 0 &&
 					files.map((item, idx) => {
-						let itemToURL = URL.createObjectURL(item);
+						// let itemToURL = URL.createObjectURL(item);
 
-						if (item?.type?.split('/')[0] == 'video') {
+						if (item?.media_type == 'video') {
 							return (
-								<video
-									width={'300px'}
-									height={'300px'}
-									muted
-									controls
-									playsInline
-								>
-									<source src={itemToURL} type={item?.type} />
-								</video>
+								<div className='tw-flex tw-flex-col'>
+									<video
+										width={'200px'}
+										height={'200px'}
+										autoPlay
+										muted
+										controls
+									>
+										<source
+											src={`${BASE_URL}/video/${item.media}`}
+										/>
+									</video>
+
+									<button
+										className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+										onClick={(e) => {
+											e.preventDefault();
+											let newFilesArr = files.filter(
+												(file) => file.name != item.name
+											);
+											setFiles(newFilesArr);
+
+											delete_gallery_media(item);
+										}}
+									>
+										Remove
+									</button>
+								</div>
 							);
 						}
 
 						return (
 							<img
-								src={itemToURL}
-								width={'300px'}
-								height={'300px'}
+								src={`${BASE_URL}/image/${item.media}`}
+								width={'200px'}
+								height={'200px'}
 							/>
 						);
 					})}

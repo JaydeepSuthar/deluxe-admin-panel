@@ -324,7 +324,7 @@ const ProductPage = () => {
 	// const filteredData = products.response.filter(
 
 	const edit_product = (row) => {
-		console.log({ row });
+		// console.log({ row });
 
 		navigate('/product/edit', { state: row });
 	};
@@ -337,8 +337,6 @@ const ProductPage = () => {
 
 		return <h1>Error Occur</h1>;
 	}
-
-	console.log({ data });
 
 	let filteredData = [];
 

@@ -4,11 +4,11 @@ import TextInvoice from '../textinvoice/TextInvoice';
 const InvoiceBill = () => {
 	return (
 		<div className='tw-container tw-flex tw-mx-auto tw-py-5'>
-			<div class='tw-overflow-hidden    tw-bg-white tw-border tw-sm:rounded-lg'>
+			<div class='tw-overflow-hidden    tw-bg-white tw-border sm:tw-rounded-lg'>
 				<div class='tw-bg-white tw-border tw-rounded tw-py-5 '>
-					<div class=' tw-max-w-7xl tw-px-4 tw-sm:px-6 tw-lg:px-8'>
+					<div class=' tw-max-w-7xl tw-px-4 sm:tw-px-6 lg:tw-px-8'>
 						<div class='tw-mt-10 tw-border tw-rounded tw-p-5'>
-							<dl class=' tw-md:grid tw-md:grid-cols-2 tw-md:gap-y-10 tw-md:space-y-0'>
+							<dl class=' md:tw-grid md:tw-grid-cols-2 md:tw-gap-y-10 md:tw-space-y-0'>
 								<div class=' tw-border-r-2 tw-mx-5'>
 									{/* <h1 className='text-xl'>CHEAPER</h1> */}
 									<dt>

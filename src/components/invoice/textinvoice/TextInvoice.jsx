@@ -10,8 +10,8 @@ const TextInvoice = () => {
 			</p>
 			<hr />
 			<div class='tw-flex tw-flex-col'>
-				<div class='tw-overflow-x-auto tw-sm:-mx-6 tw-lg:-mx-8'>
-					<div class='tw-py-2 tw-inline-block tw-min-w-full tw-sm:px-6 tw-lg:px-8'>
+				<div class='tw-overflow-x-auto sm:tw--mx-6 lg:tw--mx-8'>
+					<div class='tw-py-2 tw-inline-block tw-min-w-full sm:tw-px-6 lg:tw-px-8'>
 						<div class='tw-overflow-hidden'>
 							<table class='tw-min-w-full'>
 								<thead class='tw-border-b'>

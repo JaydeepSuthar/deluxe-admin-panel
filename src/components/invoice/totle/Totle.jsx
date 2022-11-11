@@ -4,9 +4,9 @@ const Totle = () => {
 	return (
 		<div>
 			<div class='tw-bg-white py-5 '>
-				<div class=' tw-max-w-7xl tw-px-4 tw-sm:px-6 tw-lg:px-8'>
+				<div class=' tw-max-w-7xl tw-px-4 sm:tw-px-6 lg:tw-px-8'>
 					<div class='tw-mt-10  tw-p-5'>
-						<dl class=' tw-md:grid tw-md:grid-cols-2 tw-md:gap-y-10 tw-md:space-y-0'>
+						<dl class=' md:tw-grid md:tw-grid-cols-2 md:tw-gap-y-10 md:tw-space-y-0'>
 							<div class=' '>
 								{/* <h1 className='text-xl'>CHEAPER</h1> */}
 								<dt>
