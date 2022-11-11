@@ -110,6 +110,8 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 const ProductPage = () => {
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
+	const navigate = useNavigate();
+
 	const [filterText, setFilterText] = useState('');
 	// const [data, setData] = useState([]);
 	const [stockModal, setStockModal] = useState({});
@@ -118,31 +120,6 @@ const ProductPage = () => {
 	const { data, error, isLoading, revalidate } = useFetch(
 		'/product/showcase?page=1'
 	);
-
-	// TODO: API calling demo
-	// useEffect(() => {
-	// 	const apiCall = async () => {
-	// 		try {
-	// 			const response = await axios.get(
-	// 				'http://139.59.22.201/test_api/product/showcase?page=1'
-	// 			);
-	// 			console.log(response);
-	// 			if (response.status == 200) {
-	// 				console.log('response==>', response.data.response);
-	// 				if (Array.isArray(response.data.response)) {
-	// 					setData(response.data.response);
-	// 				}
-	// 				// alert(`Trending`);
-	// 				// window.location.reload();
-	// 			} else {
-	// 				console.log('ERROR =>', { response });
-	// 			}
-	// 		} catch (err) {
-	// 			console.log({ err });
-	// 		}
-	// 	};
-	// 	apiCall();
-	// }, []);
 
 	const columns = [
 		{
@@ -272,7 +249,7 @@ const ProductPage = () => {
 								onClick={() => handleStock(row)}
 							/>
 						</i>
-						{/* <i
+						<i
 							type='button'
 							className='
 								px-6
@@ -298,9 +275,9 @@ const ProductPage = () => {
 							<BsPencilSquare
 								color='blue'
 								size={17}
-								onClick={() => alert(`Edit Product`)}
+								onClick={() => edit_product(row)}
 							/>
-						</i> */}
+						</i>
 						<i
 							type='button'
 							className='
@@ -345,6 +322,12 @@ const ProductPage = () => {
 		},
 	];
 	// const filteredData = products.response.filter(
+
+	const edit_product = (row) => {
+		console.log({ row });
+
+		navigate('/product/edit', { state: row });
+	};
 
 	if (isLoading) return <h1>Loading...</h1>;
 

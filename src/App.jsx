@@ -34,6 +34,9 @@ import InvoiceBill from './components/invoice/invoicebill/InvoiceBill';
 import useAuthStore from './store/auth';
 import { useEffect } from 'react';
 import Invoice from './components/invoice2/invoice';
+import EditProduct from './pages/Product/edit';
+import EditProductPage2 from './pages/Product/edit2';
+import EditProductPage3 from './pages/Product/edit3';
 
 const ProtectedRoute = () => {
 	const location = useLocation();
@@ -43,22 +46,30 @@ const ProtectedRoute = () => {
 	const access_token = localStorage.getItem('access_token');
 
 	useEffect(() => {
-		if (access_token) {
-			axios.defaults.headers.common[
-				'Authorization'
-			] = `Bearer ${access_token}`;
-		}
+		// if (access_token) {
+		// 	axios.defaults.headers.common[
+		// 		'Authorization'
+		// 	] = `Bearer ${access_token}`;
+		// }
 
 		if (!isAuthenticated || !access_token) {
 			navigate('/');
 		}
-	});
+	}, []);
 
 	return <Outlet />;
 };
 
 const App = () => {
 	const isLoading = useLoaderStore((state) => state.isLoading);
+
+	const access_token = localStorage.getItem('access_token');
+
+	if (access_token) {
+		axios.defaults.headers.common[
+			'Authorization'
+		] = `Bearer ${access_token}`;
+	}
 
 	return (
 		<>
@@ -77,6 +88,15 @@ const App = () => {
 							<Route path='add' element={<AddProduct />} />
 							<Route path='add2' element={<AddProduct2 />} />
 							<Route path='add3' element={<AddProduct3 />} />
+							<Route path='edit' element={<EditProduct />} />
+							<Route
+								path='edit2'
+								element={<EditProductPage2 />}
+							/>
+							<Route
+								path='edit3'
+								element={<EditProductPage3 />}
+							/>
 						</Route>
 						<Route path='/order'>
 							<Route index element={<OrderPage />} />

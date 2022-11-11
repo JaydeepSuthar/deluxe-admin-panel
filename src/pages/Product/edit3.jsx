@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import useLoaderStore from '../../store/loader';
 
-const AddProductPage3 = () => {
+const EditProductPage3 = () => {
 	// const [files, setFiles] = useState([]);
 	const navigate = useNavigate();
 
@@ -112,8 +112,8 @@ const AddProductPage3 = () => {
 						if (item?.type?.split('/')[0] == 'video') {
 							return (
 								<video
-									width={'100px'}
-									height={'100px'}
+									width={'300px'}
+									height={'300px'}
 									muted
 									controls
 									playsInline
@@ -126,8 +126,8 @@ const AddProductPage3 = () => {
 						return (
 							<img
 								src={itemToURL}
-								width={'100px'}
-								height={'100px'}
+								width={'300px'}
+								height={'300px'}
 							/>
 						);
 					})}
@@ -146,4 +146,4 @@ const AddProductPage3 = () => {
 	);
 };
 
-export default AddProductPage3;
+export default EditProductPage3;
