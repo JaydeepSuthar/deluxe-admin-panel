@@ -44,11 +44,14 @@ const ProductValidation = Yup.object().shape({
 	youtube: Yup.string(),
 });
 
+const BASE_URL = 'http://139.59.22.201/api/static/product';
+
 const EditProduct = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	// const [files, setFiles] = useState([]);
-	const [files, setFiles] = useState([]);
+	const [files, setFiles] = useState(location.state?.banners || []);
+	const [newFiles, setNewFiles] = useState([]);
 	const [filesUrl, setFilesUrl] = useState('');
 	const [product_id, setProduct_id] = useState('');
 
@@ -65,7 +68,7 @@ const EditProduct = () => {
 		isLoading: categoryLoading,
 	} = useFetch('/get_category_list');
 
-	const { data, error, isLoading } = useFetch(
+	const { data, error, isLoading, revalidate } = useFetch(
 		`/product/desc/${location.state.product_id}`,
 		{
 			revalidateOnFocus: true,
@@ -76,11 +79,12 @@ const EditProduct = () => {
 	);
 
 	const handleProductImage = (newFile) => {
-		const filesArr = [...files, ...newFile];
+		const filesArr = [...newFiles, ...newFile];
 
 		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
-		setFiles(filesArr);
-		setFilesUrl(URL.createObjectURL(file));
+		setNewFiles(filesArr);
+		setFilesUrl(URL.createObjectURL(newFiles));
+
 		// setFiles(files);
 	};
 
@@ -117,6 +121,24 @@ const EditProduct = () => {
 		fd.append('youtube', values.youtube);
 
 		try {
+			for (let i = 0; i < newFiles.length; i++) {
+				let nfd = new FormData();
+				nfd.append('product_id', location.state.product_id);
+				let fileType = newFiles[i].type?.split('/')[0];
+				nfd.append('type', fileType);
+				nfd.append('priority', i);
+				nfd.append('banner', newFiles[i]);
+
+				const bannerResponse = await axios.put(
+					'/update_media/banner',
+					nfd
+				);
+
+				if (bannerResponse.status != 200) {
+					console.error(bannerResponse);
+				}
+			}
+
 			const response = await axios.post('/product/update', fd);
 
 			if (response.status == 200) {
@@ -133,6 +155,20 @@ const EditProduct = () => {
 		// setSubmitting(false);
 	};
 
+	const delete_gallery_media = async (media) => {
+		const url = `/delete_media/${media?.media_type}?media_id=${media?.id}&product_id=${location.state.product_id}`;
+
+		const response = await axios(url);
+		// console.log({ files });
+		if (response.status == 200) {
+			revalidate();
+
+			toast.success(`${media?.media_type} successfully removed`);
+		} else {
+			console.log(response);
+		}
+	};
+
 	if (categoryLoading) return <h1>Loading Category</h1>;
 	if (categoryError) return <h1>Error in Category</h1>;
 
@@ -145,19 +181,18 @@ const EditProduct = () => {
 		...data?.response,
 		product_name: data?.response?.title,
 		youtube: data?.response?.youtube_link,
-		// kilo: splitedWeight[0],
-		// gram: splitedWeight[1],
 	};
 
 	const categoryList = category.cat_list.map((item) => item.name);
 
 	console.log({ productData });
+	console.log(location.state?.banner);
 
 	return (
 		<>
 			<div>
 				<h1>Product level 1</h1>
-				{/* <Formik>
+				<Formik>
 					{({ errors, touched, isSubmitting, resetForm }) => (
 						<Form>
 							<div className='tw-flex tw-flex-col tw-gap-4'>
@@ -185,15 +220,67 @@ const EditProduct = () => {
 												horizontalListSortingStrategy
 											}
 										>
-											{files.map((item, idx) => {
+											{productData?.banners?.map(
+												(item) => {
+													return (
+														<div className='tw-flex tw-flex-col'>
+															<OldSortableItem
+																key={item.media}
+																id={item}
+																src={item.media}
+															/>
+
+															<button
+																className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+																onClick={(
+																	e
+																) => {
+																	e.preventDefault();
+
+																	delete_gallery_media(
+																		item
+																	);
+																}}
+															>
+																Remove
+															</button>
+														</div>
+													);
+												}
+											)}
+
+											{newFiles.map((item, idx) => {
 												let itemToURL =
 													URL.createObjectURL(item);
 												return (
-													<SortableItem
-														key={itemToURL}
-														id={item}
-														src={itemToURL}
-													/>
+													<div className='tw-flex tw-flex-col'>
+														<SortableItem
+															key={itemToURL}
+															id={item}
+															src={itemToURL}
+														/>
+
+														<button
+															className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+															onClick={(e) => {
+																e.preventDefault();
+
+																const newFilesArr =
+																	newFiles.filter(
+																		(
+																			file
+																		) =>
+																			file.name !=
+																			item.name
+																	);
+																setNewFiles(
+																	newFilesArr
+																);
+															}}
+														>
+															Remove
+														</button>
+													</div>
 												);
 											})}
 										</SortableContext>
@@ -202,7 +289,7 @@ const EditProduct = () => {
 							</div>
 						</Form>
 					)}
-				</Formik>{' '} */}
+				</Formik>{' '}
 				<Formik
 					initialValues={productData}
 					enableReinitialize={true}
@@ -569,6 +656,8 @@ const EditProduct = () => {
 };
 
 const SortableItem = React.memo((props) => {
+	const { files, setFiles, id: item } = props;
+
 	const { attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({ id: props.id });
 
@@ -579,110 +668,57 @@ const SortableItem = React.memo((props) => {
 
 	return (
 		<>
-			<div className='tw-relative'>
-				<AiOutlineClose
-					className='tw-absolute tw-right-0'
-					onClick={(e) => console.log(e.target.name)}
-				/>
-
-				<div
-					ref={setNodeRef}
-					style={style}
-					{...attributes}
-					{...listeners}
-				>
-					{props.id?.type?.split('/')[0] == 'video' ? (
-						<video
-							width={'100px'}
-							height={'100px'}
-							muted
-							controls
-							playsInline
-						>
-							<source src={props.src} type={props.id?.type} />
-						</video>
-					) : (
-						<Image src={props.src} width='100px' height='100px' />
-					)}
-				</div>
+			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+				{props.id?.type?.split('/')[0] == 'video' ? (
+					<video
+						width={'200px'}
+						height={'200px'}
+						autoPlay
+						muted
+						controls
+					>
+						<source src={props.src} type={props.id?.type} />
+					</video>
+				) : (
+					<Image src={props.src} width='200px' height='200px' />
+				)}
 			</div>
 		</>
 	);
 });
 
-const ProductImageModal = ({
-	files,
-	handleProductImage,
-	handleDragEnd,
-	closestCenter,
-}) => {
-	const [show, setShow] = useState(true);
+const OldSortableItem = React.memo((props) => {
+	const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({ id: props.id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
 
 	return (
 		<>
-			<Modal
-				size='lg'
-				show={show}
-				backdrop={true}
-				dialogClassName='tw-w-11/12'
-				// className='tw-w-11/12'
-				onHide={() => setShow(false)}
-			>
-				<Modal.Body>
-					<Formik>
-						{({ errors, touched, isSubmitting, resetForm }) => (
-							<Form>
-								<div className='tw-flex tw-flex-row'>
-									<div className='upload-area tw-w-full lg:tw-h-72 tw-h-48 tw-rounded-md tw-border-gray-300 tw-text-gray-300 tw-font-bold tw-cursor-pointer tw-border-dashed tw-flex tw-justify-center tw-items-center tw-relative'>
-										Add Banner Image
-										<input
-											type='file'
-											className='tw-opacity-0 tw-absolute tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-cursor-pointer'
-											accept='image/*,video/*'
-											multiple
-											onChange={(e) => {
-												handleProductImage(
-													e.target.files
-												);
-											}}
-										/>
-									</div>
-
-									<div className='image-preview tw-w-full tw-mb-2 tw-flex tw-flex-row flex-wrap tw-gap-4 tw-p-3 tw-bg-gray-100'>
-										<DndContext
-											collisionDetection={closestCenter}
-											onDragEnd={handleDragEnd}
-										>
-											<SortableContext
-												items={files}
-												strategy={
-													horizontalListSortingStrategy
-												}
-											>
-												{files.map((item, idx) => {
-													let itemToURL =
-														URL.createObjectURL(
-															item
-														);
-													return (
-														<SortableItem
-															key={itemToURL}
-															id={item}
-															src={itemToURL}
-														/>
-													);
-												})}
-											</SortableContext>
-										</DndContext>
-									</div>
-								</div>
-							</Form>
-						)}
-					</Formik>{' '}
-				</Modal.Body>
-			</Modal>
+			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+				{props.id?.media_type == 'video' ? (
+					<video
+						width={'200px'}
+						height={'200px'}
+						autoPlay
+						muted
+						controls
+					>
+						<source src={`${BASE_URL}/video/${props.src}`} />
+					</video>
+				) : (
+					<Image
+						src={`${BASE_URL}/image/${props.src}`}
+						width='200px'
+						height='200px'
+					/>
+				)}
+			</div>
 		</>
 	);
-};
+});
 
 export default EditProduct;

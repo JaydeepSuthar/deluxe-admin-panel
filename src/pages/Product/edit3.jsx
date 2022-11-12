@@ -16,7 +16,7 @@ const EditProductPage3 = () => {
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
 	const [files, setFiles] = useState([]);
-	const [filesUrl, setFilesUrl] = useState();
+	const [newFiles, setNewFiles] = useState([]);
 	const [product_id, setProduct_id] = useState('');
 
 	useEffect(() => {
@@ -27,10 +27,10 @@ const EditProductPage3 = () => {
 	}, []);
 
 	const handleProductImage = (newFile) => {
-		const filesArr = [...files, ...newFile];
+		const filesArr = [...newFiles, ...newFile];
 
 		// filesArr.forEach((item) => console.log(URL.createObjectURL(item)));
-		setFiles(filesArr);
+		setNewFiles(filesArr);
 		// setFilesUrl(URL.createObjectURL(file));
 		// setFiles(files);
 	};
@@ -38,22 +38,25 @@ const EditProductPage3 = () => {
 	const handleSubmit = async () => {
 		setLoading(true);
 
-		if (files) {
+		if (newFiles) {
 			try {
-				let fd = new FormData();
-				fd.append('product_id', product_id);
+				for (let i = 0; i < newFiles.length; i++) {
+					let fd = new FormData();
+					fd.append('product_id', product_id);
 
-				for (let i = 0; i < files.length; i++) {
-					let fileType = files[i].type?.split('/')[0];
+					let fileType = newFiles[i].type?.split('/')[0];
+
 					fd.append('type', fileType);
 					fd.append('priority', i);
-					fd.append('gallery', files[i]);
+					fd.append('gallery', newFiles[i]);
 
 					const response = await axios.put(
 						'/update_media/gallery',
 						fd
 					);
-					if (response.status == 200) {
+
+					if (response.status != 200) {
+						toast.error(`Error Uploading Gallery`)
 						console.log(response);
 					} else {
 						console.log(response);
@@ -61,23 +64,18 @@ const EditProductPage3 = () => {
 					}
 				}
 			} catch (error) {
-				alert(JSON.stringify(error, null, 2));
+				console.log(error, null, 2);
 			}
 		}
 
 		swal({
-			title: 'Product successful added',
-			text: 'Your product is successful inserted',
+			title: 'Product successful Updated',
+			text: 'Your product is successful updated',
 			icon: 'success',
-			buttons: true,
-			dangerMode: true,
-		}).then(async (value) => {
-			if (value) {
-				const publicProduct = await axios.put(`/publish/${product_id}`);
-				setLoading(false);
-				navigate('/product');
-			}
 		});
+
+		navigate('/product');
+
 		setLoading(false);
 	};
 
@@ -87,6 +85,12 @@ const EditProductPage3 = () => {
 		const response = await axios(url);
 
 		if (response.status == 200) {
+			const newFilesArr = files.filter(
+				(file) => file.media != media.media
+			);
+
+			setFiles(newFilesArr);
+
 			toast.success(`${media?.media_type} successfully removed`);
 		} else {
 			console.log(response);
@@ -145,10 +149,6 @@ const EditProductPage3 = () => {
 										className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
 										onClick={(e) => {
 											e.preventDefault();
-											let newFilesArr = files.filter(
-												(file) => file.name != item.name
-											);
-											setFiles(newFilesArr);
 
 											delete_gallery_media(item);
 										}}
@@ -160,11 +160,86 @@ const EditProductPage3 = () => {
 						}
 
 						return (
-							<img
-								src={`${BASE_URL}/image/${item.media}`}
-								width={'200px'}
-								height={'200px'}
-							/>
+							<div className='tw-flex tw-flex-col'>
+								<img
+									src={`${BASE_URL}/image/${item.media}`}
+									width={'200px'}
+									height={'200px'}
+								/>
+
+								<button
+									className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+									onClick={(e) => {
+										e.preventDefault();
+
+										delete_gallery_media(item);
+									}}
+								>
+									Remove
+								</button>
+							</div>
+						);
+					})}
+
+				{newFiles?.length > 0 &&
+					newFiles.map((item, idx) => {
+						let itemToURL = URL.createObjectURL(item);
+
+						if (item?.type?.split('/')[0] == 'video') {
+							return (
+								<div className='tw-flex tw-flex-col'>
+									<video
+										width={'200px'}
+										height={'200px'}
+										muted
+										controls
+										playsInline
+									>
+										<source
+											src={itemToURL}
+											type={item?.type}
+										/>
+									</video>
+
+									<button
+										className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+										onClick={(e) => {
+											e.preventDefault();
+
+											const newFilesArr = newFiles.filter(
+												(file) => file.name != item.name
+											);
+											setNewFiles(newFilesArr);
+										}}
+									>
+										Remove
+									</button>
+								</div>
+							);
+						}
+
+						return (
+							<div className='tw-flex tw-flex-col'>
+								<img
+									src={itemToURL}
+									width={'200px'}
+									height={'200px'}
+								/>
+
+								<button
+									className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+									onClick={(e) => {
+										e.preventDefault();
+
+										const newFilesArr = newFiles.filter(
+											(file) => file.name != item.name
+										);
+										setNewFiles(newFilesArr);
+									}}
+								>
+									Remove
+								</button>
+							</div>
 						);
 					})}
 			</div>

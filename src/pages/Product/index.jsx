@@ -112,13 +112,14 @@ const ProductPage = () => {
 
 	const navigate = useNavigate();
 
+	const [pageIndex, setPageIndex] = useState(1);
 	const [filterText, setFilterText] = useState('');
 	// const [data, setData] = useState([]);
 	const [stockModal, setStockModal] = useState({});
 	const [show, setShow] = useState(false);
 
 	const { data, error, isLoading, revalidate } = useFetch(
-		'/product/showcase?page=1'
+		`/product/showcase?page=${pageIndex}`
 	);
 
 	const columns = [
@@ -329,24 +330,13 @@ const ProductPage = () => {
 		navigate('/product/edit', { state: row });
 	};
 
-	if (isLoading) return <h1>Loading...</h1>;
+	const handlePerRowsChange = async (newPerPage, page) => {
+		console.log(page);
+	};
 
-	if (error) {
-		if (error?.response?.status == 401)
-			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
-
-		return <h1>Error Occur</h1>;
-	}
-
-	let filteredData = [];
-
-	filteredData = data?.response?.filter(
-		(item) =>
-			(item.title &&
-				item.title.toLowerCase().includes(filterText.toLowerCase())) ||
-			(item.category &&
-				item.category.toLowerCase().includes(filterText.toLowerCase()))
-	);
+	const handlePageChange = (page) => {
+		setPageIndex(page);
+	};
 
 	const handleStock = (row) => {
 		console.log('hello', row);
@@ -358,6 +348,28 @@ const ProductPage = () => {
 		console.log('values ==>', values);
 	};
 
+	if (isLoading) return <h1>Loading...</h1>;
+
+	if (error) {
+		if (error?.response?.status == 401)
+			return <h1>Your Token is Expired Please Logout and Re-Login</h1>;
+
+		return <h1>Error Occur</h1>;
+	}
+
+	let filteredData = [];
+	let responseData = data?.response || [];
+
+	console.log(`total products ==>`, responseData.length);
+
+	filteredData = responseData.filter(
+		(item) =>
+			(item?.title &&
+				item?.title.toLowerCase().includes(filterText.toLowerCase())) ||
+			(item?.category &&
+				item?.category.toLowerCase().includes(filterText.toLowerCase()))
+	);
+
 	return (
 		<>
 			<h1>Product Page</h1>
@@ -368,8 +380,16 @@ const ProductPage = () => {
 			/>
 
 			<Card className='p-2'>
-				<Table columns={columns} data={filteredData} />
+				<Table
+					columns={columns}
+					data={filteredData}
+					paginationServer
+					paginationTotalRows={responseData?.length}
+					onChangeRowsPerPage={handlePerRowsChange}
+					onChangePage={handlePageChange}
+				/>
 			</Card>
+
 			{show && (
 				<AddStockModal
 					show={show}

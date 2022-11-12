@@ -35,10 +35,10 @@ const AddProductPage3 = () => {
 
 		if (files) {
 			try {
-				let fd = new FormData();
-				fd.append('product_id', product_id);
-
 				for (let i = 0; i < files.length; i++) {
+					let fd = new FormData();
+					fd.append('product_id', product_id);
+
 					let fileType = files[i].type?.split('/')[0];
 					fd.append('type', fileType);
 					fd.append('priority', i);
@@ -48,31 +48,34 @@ const AddProductPage3 = () => {
 						'/update_media/gallery',
 						fd
 					);
-					if (response.status == 200) {
+
+					if (response.status != 200) {
 						console.log(response);
+
+						toast.error(`Error while Uploading Gallery`);
 					} else {
 						console.log(response);
 						// toast.error(``)
 					}
 				}
+
+				swal({
+					title: 'Product successful added',
+					text: 'Your product is successful inserted',
+					icon: 'success',
+				}).then(async () => {
+					const publicProduct = await axios.put(
+						`/publish/${product_id}`
+					);
+					setLoading(false);
+					navigate('/product');
+				});
+				
 			} catch (error) {
-				alert(JSON.stringify(error, null, 2));
+				console.error(error);
 			}
 		}
 
-		swal({
-			title: 'Product successful added',
-			text: 'Your product is successful inserted',
-			icon: 'success',
-			buttons: true,
-			dangerMode: true,
-		}).then(async (value) => {
-			if (value) {
-				const publicProduct = await axios.put(`/publish/${product_id}`);
-				setLoading(false);
-				navigate('/product');
-			}
-		});
 		setLoading(false);
 	};
 

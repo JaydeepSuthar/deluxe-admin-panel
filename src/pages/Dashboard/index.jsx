@@ -1,5 +1,6 @@
 import { FaBoxOpen, FaUserAlt } from 'react-icons/fa';
 import { BiTrendingUp } from 'react-icons/bi';
+import swal from 'sweetalert';
 
 const cardsArr = [
 	{

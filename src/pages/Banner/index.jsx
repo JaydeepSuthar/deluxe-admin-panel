@@ -4,10 +4,6 @@ import { Button, Card, Carousel } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-// import image1 from '../../assets/image-1.jpg';
-// import image2 from '../../assets/image-2.jpg';
-// import image3 from '../../assets/image-3.jpg';
-// import image4 from '../../assets/image-4.jpg';
 import AddBannerModal from '../../components/model/AddBannerModal';
 import { useFetch } from '../../hooks';
 import useLoaderStore from '../../store/loader';
@@ -99,21 +95,6 @@ const BannerPage = () => {
 	);
 };
 
-// const carouselArr = [
-// 	{
-// 		img: image1,
-// 	},
-// 	{
-// 		img: image2,
-// 	},
-// 	{
-// 		img: image3,
-// 	},
-// 	{
-// 		img: image4,
-// 	},
-// ];
-
 const CarouselComponent = ({ index, setIndex, handleSelect, images }) => {
 	return (
 		<Carousel
@@ -125,7 +106,7 @@ const CarouselComponent = ({ index, setIndex, handleSelect, images }) => {
 			{images.map((item, idx) => (
 				<Carousel.Item>
 					<img
-						className='d-block w-100  tw-h-[600px] tw-object-fit'
+						className='d-block w-100  tw-h-[600px] tw-object-contain'
 						src={`${BANNER_URL}/${item.banner}`}
 						alt='First slide'
 					/>

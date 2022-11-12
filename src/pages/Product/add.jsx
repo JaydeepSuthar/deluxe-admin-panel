@@ -89,6 +89,19 @@ const AddProduct = () => {
 	};
 
 	const handleSubmit = async (values) => {
+		const imageFiles = [];
+		const videoFiles = [];
+
+		for (let i = 0; i < files.length; i++) {
+			let fileType = files[i].type?.split('/')[0];
+
+			if (fileType == 'video') {
+				videoFiles.push(files[i]);
+			} else {
+				imageFiles.push(files[i]);
+			}
+		}
+
 		try {
 			// console.log('hello 111');
 			const response = await axios.get('get_new_product_id');
@@ -119,40 +132,60 @@ const AddProduct = () => {
 
 				if (product1.status == 200) {
 					console.log(product1);
-					let fd2 = new FormData();
+					let count = 0;
 
-					fd2.append('product_id', response.data.id);
-					fd2.append('type', 'image');
+					// TODO: send all videos in last
+					// fd2.append('type', 'image');
 
-					for (let i = 0; i < files.length; i++) {
-						fd2.append('priority', i);
-						fd2.append('banner', files[i]);
+					for (let i = 0; i < imageFiles.length; i++) {
+						let fd2 = new FormData();
+						fd2.append('product_id', response.data.id);
+						fd2.append('type', 'image');
+						fd2.append('priority', count);
+						fd2.append('banner', imageFiles[i]);
+						count++;
+
 						const bannerApi = await axios.put(
 							'/update_media/banner',
 							fd2
 						);
 
-						if (bannerApi.status == 200) {
-							console.log(bannerApi);
-							// alert(JSON.stringify(bannerApi, null, 2));
-							navigate('/product/add2');
-						} else {
-							console.log(`banner api`);
-							// alert(JSON.stringify(bannerApi, null, 2));
-							console.error(bannerApi);
+						if (bannerApi.status != 200) {
+							toast.error(`Problem in Uploading Banner`);
 						}
 					}
+
+					for (let i = 0; i < videoFiles.length; i++) {
+						let fd2 = new FormData();
+						fd2.append('product_id', response.data.id);
+
+						fd2.append('type', 'video');
+						fd2.append('priority', count);
+						fd2.append('banner', videoFiles[i]);
+						count++;
+
+						const bannerApi = await axios.put(
+							'/update_media/banner',
+							fd2
+						);
+
+						if (bannerApi.status != 200) {
+							toast.error(`Problem in Uploading Banner`);
+						}
+					}
+
+					navigate('/product/add2');
 				} else {
 					console.log(`product 1`);
-					alert(JSON.stringify(product1, null, 2));
+					console.log(product1);
 				}
 			} else {
 				console.log(`else`);
-				alert(JSON.stringify(response, null, 2));
+				console.log(response);
 			}
 		} catch (error) {
 			console.log(`catch`);
-			alert(JSON.stringify(error, null, 2));
+			console.log(error);
 		}
 		// setSubmitting(false);
 	};
@@ -622,27 +655,19 @@ const SortableItem = React.memo((props) => {
 	return (
 		<>
 			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-				{/* <div className='tw-flex tw-flex-col'> */}
-				{/* <AiFillCloseCircle
-						className='tw-absolute tw-right-0'
-						size={'20px'}
-						onClick={(_) => {
-							alert(`click`)
-							const newFilesArr = files.filter(
-								(file) => file.name != item.name
-							);
-
-							setFiles(newFilesArr);
-						}}
-					/> */}
 				{props.id?.type?.split('/')[0] == 'video' ? (
-					<video width={'200px'} height={'200px'} autoPlay muted controls>
+					<video
+						width={'200px'}
+						height={'200px'}
+						autoPlay
+						muted
+						controls
+					>
 						<source src={props.src} type={props.id?.type} />
 					</video>
 				) : (
 					<Image src={props.src} width='200px' height='200px' />
 				)}
-				{/* </div> */}
 			</div>
 		</>
 	);
