@@ -107,6 +107,9 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 	);
 };
 
+let no_of_stock = 0;
+let product_id = 0;
+
 const ProductPage = () => {
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
@@ -247,7 +250,11 @@ const ProductPage = () => {
 								color='green'
 								className='mx-3'
 								size={17}
-								onClick={() => handleStock(row)}
+								onClick={() => {
+									no_of_stock = row.stock;
+									product_id = row.product_id;
+									handleStock(row);
+								}}
 							/>
 						</i>
 						<i
@@ -345,7 +352,25 @@ const ProductPage = () => {
 	};
 
 	const submitHandler = async (values) => {
-		console.log('values ==>', values);
+		console.log({ values });
+
+		const fd = new FormData();
+
+		fd.append('id', product_id);
+		fd.append('stock', values.stock);
+
+		try {
+			const response = await axios.post('/product/update', fd);
+
+			if (response.status == 200) {
+				toast.success(`Stock Updated Successfully`);
+			} else {
+				console.log(`Problem in Response`)
+				console.error(response);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	// if (isLoading) return <h1>Loading...</h1>;
@@ -396,6 +421,7 @@ const ProductPage = () => {
 					show={show}
 					setShow={setShow}
 					submitHandler={submitHandler}
+					oldStock={no_of_stock}
 				/>
 			)}
 		</>

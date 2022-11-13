@@ -4,8 +4,8 @@ import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 
-const AddStockModal = ({ show, setShow, submitHandler }) => {
-	const [stock, setStock] = useState(0);
+const AddStockModal = ({ show, setShow, oldStock, submitHandler }) => {
+	const [stock, setStock] = useState(oldStock);
 
 	const [error, setError] = useState();
 
@@ -34,10 +34,13 @@ const AddStockModal = ({ show, setShow, submitHandler }) => {
 						<Form.Group className='mb-3'>
 							<Form.Label>Add Stock</Form.Label>
 							<Form.Control
+								type='number'
 								value={stock}
 								onChange={(e) => {
-									setStock(e.target.value);
-									setError(false);
+									if (e.target.value >= 0) {
+										setStock(e.target.value);
+										setError(false);
+									}
 								}}
 								isInvalid={!!error}
 							/>

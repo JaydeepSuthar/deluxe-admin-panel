@@ -224,10 +224,11 @@ const EditProduct = () => {
 												(item) => {
 													return (
 														<div className='tw-flex tw-flex-col'>
-															<OldSortableItem
+															<SortableItem
 																key={item.media}
 																id={item}
 																src={item.media}
+																isUpdate={true}
 															/>
 
 															<button
@@ -655,6 +656,38 @@ const EditProduct = () => {
 	);
 };
 
+// const SortableItem = React.memo((props) => {
+// 	const { files, setFiles, id: item } = props;
+
+// 	const { attributes, listeners, setNodeRef, transform, transition } =
+// 		useSortable({ id: props.id });
+
+// 	const style = {
+// 		transform: CSS.Transform.toString(transform),
+// 		transition,
+// 	};
+
+// 	return (
+// 		<>
+// 			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+// 				{props.id?.type?.split('/')[0] == 'video' ? (
+// 					<video
+// 						width={'200px'}
+// 						height={'200px'}
+// 						autoPlay
+// 						muted
+// 						controls
+// 					>
+// 						<source src={props.src} type={props.id?.type} />
+// 					</video>
+// 				) : (
+// 					<Image src={props.src} width='200px' height='200px' />
+// 				)}
+// 			</div>
+// 		</>
+// 	);
+// });
+
 const SortableItem = React.memo((props) => {
 	const { files, setFiles, id: item } = props;
 
@@ -669,23 +702,39 @@ const SortableItem = React.memo((props) => {
 	return (
 		<>
 			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-				{props.id?.type?.split('/')[0] == 'video' ? (
-					<video
-						width={'200px'}
-						height={'200px'}
-						autoPlay
-						muted
-						controls
-					>
-						<source src={props.src} type={props.id?.type} />
-					</video>
+				{props.isUpdate ? (
+					<OldItem {...props} />
 				) : (
-					<Image src={props.src} width='200px' height='200px' />
+					<NewItem {...props} />
 				)}
 			</div>
 		</>
 	);
 });
+
+const NewItem = (props) => {
+	return props.id?.type?.split('/')[0] == 'video' ? (
+		<video width={'200px'} height={'200px'} autoPlay muted controls>
+			<source src={props.src} type={props.id?.type} />
+		</video>
+	) : (
+		<Image src={props.src} width='200px' height='200px' />
+	);
+};
+
+const OldItem = (props) => {
+	return props.id?.media_type == 'video' ? (
+		<video width={'200px'} height={'200px'} autoPlay muted controls>
+			<source src={`${BASE_URL}/video/${props.src}`} />
+		</video>
+	) : (
+		<Image
+			src={`${BASE_URL}/image/${props.src}`}
+			width='200px'
+			height='200px'
+		/>
+	);
+};
 
 const OldSortableItem = React.memo((props) => {
 	const { attributes, listeners, setNodeRef, transform, transition } =
