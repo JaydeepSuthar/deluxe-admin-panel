@@ -10,6 +10,15 @@ import useLoaderStore from '../../store/loader';
 
 const BANNER_URL = `http://139.59.22.201/api/static/app_banners`;
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+// import required modules
+import { Navigation } from 'swiper';
+
 const BannerPage = () => {
 	const navigate = useNavigate();
 
@@ -75,12 +84,33 @@ const BannerPage = () => {
 
 			<Card>
 				<Card.Body>
-					<CarouselComponent
+					{/* <CarouselComponent
 						index={index}
 						setIndex={setIndex}
 						handleSelect={handleSelect}
 						images={data?.banners}
-					/>
+					/> */}
+
+					<Swiper
+						// spaceBetween={50}
+						// slidesPerView={1}
+						// onSlideChange={() => console.log('slide change')}
+						// onSwiper={(swiper) => console.log(swiper)}
+						navigation={true}
+						modules={[Navigation]}
+					>
+						{data?.banners?.map((item) => {
+							return (
+								<SwiperSlide>
+									<img
+										className='d-block w-100  tw-h-[600px] tw-object-contain'
+										src={`${BANNER_URL}/${item.banner}`}
+										alt='First slide'
+									/>
+								</SwiperSlide>
+							);
+						})}
+					</Swiper>
 				</Card.Body>
 			</Card>
 

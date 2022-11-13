@@ -70,7 +70,6 @@ const AddProductPage3 = () => {
 					setLoading(false);
 					navigate('/product');
 				});
-				
 			} catch (error) {
 				console.error(error);
 			}
@@ -114,24 +113,57 @@ const AddProductPage3 = () => {
 
 						if (item?.type?.split('/')[0] == 'video') {
 							return (
-								<video
-									width={'100px'}
-									height={'100px'}
-									muted
-									controls
-									playsInline
-								>
-									<source src={itemToURL} type={item?.type} />
-								</video>
+								<div className='tw-flex tw-flex-col'>
+									<video
+										width={'200px'}
+										height={'200px'}
+										muted
+										controls
+										playsInline
+									>
+										<source
+											src={itemToURL}
+											type={item?.type}
+										/>
+									</video>
+
+									<button
+										className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+										onClick={(e) => {
+											e.preventDefault();
+											let newFilesArr = files.filter(
+												(file) => file.name != item.name
+											);
+											setFiles(newFilesArr);
+										}}
+									>
+										Remove
+									</button>
+								</div>
 							);
 						}
 
 						return (
-							<img
-								src={itemToURL}
-								width={'100px'}
-								height={'100px'}
-							/>
+							<div className='tw-flex tw-flex-col'>
+								<img
+									src={itemToURL}
+									width={'200px'}
+									height={'200px'}
+								/>
+								
+								<button
+									className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+									onClick={(e) => {
+										e.preventDefault();
+										let newFilesArr = files.filter(
+											(file) => file.name != item.name
+										);
+										setFiles(newFilesArr);
+									}}
+								>
+									Remove
+								</button>
+							</div>
 						);
 					})}
 			</div>

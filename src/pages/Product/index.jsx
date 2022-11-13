@@ -348,7 +348,7 @@ const ProductPage = () => {
 		console.log('values ==>', values);
 	};
 
-	if (isLoading) return <h1>Loading...</h1>;
+	// if (isLoading) return <h1>Loading...</h1>;
 
 	if (error) {
 		if (error?.response?.status == 401)
@@ -360,7 +360,7 @@ const ProductPage = () => {
 	let filteredData = [];
 	let responseData = data?.response || [];
 
-	console.log(`total products ==>`, responseData.length);
+	console.log(`total products ==>`, responseData?.length);
 
 	filteredData = responseData.filter(
 		(item) =>
@@ -383,8 +383,9 @@ const ProductPage = () => {
 				<Table
 					columns={columns}
 					data={filteredData}
+					progressPending={isLoading}
 					paginationServer
-					paginationTotalRows={responseData?.length}
+					paginationTotalRows={data?.total_products}
 					onChangeRowsPerPage={handlePerRowsChange}
 					onChangePage={handlePageChange}
 				/>
