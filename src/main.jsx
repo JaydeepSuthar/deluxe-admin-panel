@@ -21,7 +21,7 @@ axios.defaults.baseURL =
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
 		<AuthProvider>
-			<BrowserRouter>
+			<BrowserRouter basename='admin'>
 				<Routes>
 					<Route path='/*' element={<App />} />
 				</Routes>
