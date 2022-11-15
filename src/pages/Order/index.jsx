@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Image, Card, Button } from 'react-bootstrap';
 import {
@@ -73,6 +74,30 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 	);
 };
 
+const demo_data = [
+	{
+		customer_name: 'Jaydeep',
+		customer_mobile_number: '7894561230',
+		order_id: '#4654789',
+		amount: 700,
+		order_date: new Date(),
+	},
+	{
+		customer_name: 'Jaydeep',
+		customer_mobile_number: '7894561230',
+		order_id: '#452222',
+		amount: 500,
+		order_date: new Date(),
+	},
+	{
+		customer_name: 'Jaydeep',
+		customer_mobile_number: '7894561230',
+		order_id: '#465777',
+		amount: 7000,
+		order_date: new Date(),
+	},
+];
+
 const OrderPage = () => {
 	const [filterText, setFilterText] = useState('');
 	const [invoiceShow, setInvoiceShow] = useState(false);
@@ -100,80 +125,53 @@ const OrderPage = () => {
 			// sortable: true,
 			width: '6em',
 		},
-		{
-			name: 'IMAGE',
-			selector: (row) => row.banner.media,
-			cell: (row) => {
-				let imageURL = `${BASE_URL}/${row.banner.media}`;
+		// {
+		// 	name: 'IMAGE',
+		// 	selector: (row) => row.banner.media,
+		// 	cell: (row) => {
+		// 		let imageURL = `${BASE_URL}/${row.banner.media}`;
 
-				return <Image src={imageURL} width='80px' height={'80px'} />;
-			},
-			// sortable: true,
-			// width: "6em",
-		},
+		// 		return <Image src={imageURL} width='80px' height={'80px'} />;
+		// 	},
+		// 	// sortable: true,
+		// 	// width: "6em",
+		// },
 		{
-			name: 'TITLE',
-			selector: (row) => row.title,
+			name: 'ORDER ID',
+			selector: (row) => row.order_id,
 			sortable: true,
 			// wrap: true,
 			// width: "6em",
 		},
 		{
-			name: 'CATEGORY',
-			selector: (row) => row.category,
+			name: 'CUSTOMER NAME',
+			selector: (row) => row.customer_name,
 			// sortable: true,
 			wrap: true,
 			width: '12em',
 		},
 		{
-			name: 'STOCK',
-			selector: (row) => row.stock,
+			name: 'MOBILE NUMBER',
+			selector: (row) => row.customer_mobile_number,
+			// sortable: true,
+			width: "12em",
+		},
+		{
+			name: 'STATUS',
+			selector: (row) => row.order_status,
 			// sortable: true,
 			// width: "6em",
 		},
 		{
-			name: 'CARTOON',
-			selector: (row) => row.cartoon,
+			name: 'AMOUNT',
+			selector: (row) => row.amount,
 			// sortable: true,
 			// width: "6em",
 		},
 		{
-			name: 'TRENDING',
-			// selector: (row) => `${row.isTrending}`,
-			cell: (row) => {
-				return (
-					<div
-						className='trending'
-						onClick={() => toggle_trending(row.product_id)}
-					>
-						{row.isTrending ? (
-							<BsLightningChargeFill color='orange' size='16px' />
-						) : (
-							<BsLightningCharge size='16px' />
-						)}
-					</div>
-				);
-			},
-			// sortable: true,
-			// width: "6em",
-		},
-		{
-			name: 'PRICE',
-			selector: (row) => row.price,
-			sortable: true,
-			// width: "6em",
-			wrap: true,
-		},
-		{
-			name: 'MRP',
-			selector: (row) => row.mrp,
-			sortable: true,
-			// width: "6em",
-			wrap: true,
-		},
-		{
-			name: 'DISCOUNT',
-			selector: (row) => `${row.discount_percentage}%`,
+			name: 'DATE',
+			// selector: (row) => `${row.order_date}`,
+			selector: (row) => dayjs(row.order_date).format("DD-MM-YYYY :: hh:mm"),
 			sortable: true,
 			// width: "6em",
 			wrap: true,
@@ -184,18 +182,10 @@ const OrderPage = () => {
 			cell: (row) => {
 				return (
 					<>
-						<BsPencilSquare
-							color='blue'
-							size={17}
-							onClick={() => alert(`Edit Product`)}
-						/>
-
-						<BsTrash
-							color='red'
-							className='mx-3'
-							size={17}
-							onClick={() => delete_product(row.product_id)}
-						/>
+						<div className='tw-flex tw-flex-row tw-gap-1'>
+							<Button size="sm" variant='primary'>View</Button>
+							<Button size="sm" variant='danger'>Cancel</Button>
+						</div>
 					</>
 				);
 			},
@@ -222,6 +212,8 @@ const OrderPage = () => {
 			(item.category &&
 				item.category.toLowerCase().includes(filterText.toLowerCase()))
 	);
+
+	// const filteredData = demo_data;
 
 	const handlePrint = () => {
 		let body = document.body.innerHTML;
