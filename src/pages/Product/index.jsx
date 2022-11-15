@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { SWRConfig } from 'swr';
 
-import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddStockModal from '../../components/model/AddStockModal';

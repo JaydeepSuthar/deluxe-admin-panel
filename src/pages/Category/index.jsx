@@ -10,7 +10,6 @@ import {
 } from 'react-icons/bs';
 import swal from 'sweetalert';
 
-// import category from '../../../misc/category';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import AddCategoryModal from '../../components/model/AddCategoryModal';

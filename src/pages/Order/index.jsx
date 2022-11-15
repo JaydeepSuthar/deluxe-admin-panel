@@ -10,7 +10,6 @@ import {
 } from 'react-icons/bs';
 import swal from 'sweetalert';
 
-import products from '../../../misc/product';
 import Table from '../../components/data-table/DataTable';
 import SearchFilter from '../../components/filters/SearchFilter';
 import InvoiceBill from '../../components/invoice/invoicebill/InvoiceBill';
