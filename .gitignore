@@ -24,3 +24,5 @@ dist-ssr
 
 # My Files
 misc
+
+.vercel

@@ -105,72 +105,52 @@ const OrderPage = () => {
 
 	const columns = [
 		{
-			name: 'PRINT',
-			// selector: (row) => row.banner.media,
-			cell: (row) => {
-				// let imageURL = `${BASE_URL}/${row.banner.media}`;
-
-				return (
-					<BsPrinterFill
-						size={22}
-						onClick={() => {
-							// alert(JSON.stringify(row, null, 2));
-							// <InvoiceBill />;
-							handlePrint();
-						}}
-					/>
-				);
-			},
-			// sortable: true,
-			width: '6em',
-		},
-		// {
-		// 	name: 'IMAGE',
-		// 	selector: (row) => row.banner.media,
-		// 	cell: (row) => {
-		// 		let imageURL = `${BASE_URL}/${row.banner.media}`;
-
-		// 		return <Image src={imageURL} width='80px' height={'80px'} />;
-		// 	},
-		// 	// sortable: true,
-		// 	// width: "6em",
-		// },
-		{
 			name: 'ORDER ID',
 			selector: (row) => row.order_id,
 			sortable: true,
-			// wrap: true,
-			// width: "6em",
+			wrap: true,
+			// width: '12em',
 		},
 		{
-			name: 'CUSTOMER NAME',
+			name: 'NAME',
 			selector: (row) => row.customer_name,
 			// sortable: true,
 			wrap: true,
-			width: '12em',
+			// width: '12em',
 		},
 		{
-			name: 'MOBILE NUMBER',
+			name: 'MOBILE',
 			selector: (row) => row.customer_mobile_number,
 			// sortable: true,
-			width: "12em",
+			wrap: true,
+			width: '10em',
 		},
 		{
 			name: 'STATUS',
 			selector: (row) => row.order_status,
+			wrap: true,
 			// sortable: true,
 			// width: "6em",
 		},
 		{
 			name: 'AMOUNT',
 			selector: (row) => row.amount,
+			wrap: true,
+			// sortable: true,
+			// width: "6em",
+		},
+		{
+			name: 'NO. OF PRODUCT',
+			selector: (row) => row.count_of_item_type,
+			wrap: true,
 			// sortable: true,
 			// width: "6em",
 		},
 		{
 			name: 'DATE',
 			// selector: (row) => `${row.order_date}`,
-			selector: (row) => dayjs(row.order_date).format("DD-MM-YYYY :: hh:mm"),
+			selector: (row) =>
+				dayjs(row.order_date).format('DD-MM-YYYY :: hh:mm'),
 			sortable: true,
 			// width: "6em",
 			wrap: true,
@@ -182,14 +162,25 @@ const OrderPage = () => {
 				return (
 					<>
 						<div className='tw-flex tw-flex-row tw-gap-1'>
-							<Button size="sm" variant='primary'>View</Button>
-							<Button size="sm" variant='danger'>Cancel</Button>
+							<Button size='sm' variant='primary'>
+								View
+							</Button>
+							<Button
+								size='sm'
+								variant='warning'
+								onClick={handlePrint}
+							>
+								Print
+							</Button>
+							<Button size='sm' variant='danger'>
+								Cancel
+							</Button>
 						</div>
 					</>
 				);
 			},
 			// sortable: true,
-			width: '12em',
+			width: '16em',
 		},
 	];
 
@@ -202,14 +193,16 @@ const OrderPage = () => {
 		return <h1>Error Occur</h1>;
 	}
 
-	console.log({ data });
-
 	const filteredData = data?.active_orders?.filter(
 		(item) =>
-			(item.title &&
-				item.title.toLowerCase().includes(filterText.toLowerCase())) ||
-			(item.category &&
-				item.category.toLowerCase().includes(filterText.toLowerCase()))
+			(item?.order_id &&
+				item?.order_id
+					.toLowerCase()
+					.includes(filterText.toLowerCase())) ||
+			(item?.customer_name &&
+				item?.customer_name
+					.toLowerCase()
+					.includes(filterText.toLowerCase()))
 	);
 
 	// const filteredData = demo_data;
