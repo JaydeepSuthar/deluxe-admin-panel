@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './tailwind.css';
 
 axios.defaults.baseURL =
-	import.meta.env.PUBLIC_API_URL || `http://139.59.22.201/test_api`;
+	import.meta.env.PUBLIC_API_URL || `http://139.59.22.201/api/test_api`;
 
 // axios.defaults.headers.common[
 // 	'Authorization'

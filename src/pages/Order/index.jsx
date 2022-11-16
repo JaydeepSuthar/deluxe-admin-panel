@@ -8,6 +8,7 @@ import {
 	BsPrinterFill,
 	BsTrash,
 } from 'react-icons/bs';
+import { AiOutlineEye, AiOutlineFilePdf } from 'react-icons/ai';
 import swal from 'sweetalert';
 
 import Table from '../../components/data-table/DataTable';
@@ -15,39 +16,41 @@ import SearchFilter from '../../components/filters/SearchFilter';
 import InvoiceBill from '../../components/invoice/invoicebill/InvoiceBill';
 import { useFetch } from '../../hooks';
 
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
-const toggle_trending = async (id) => {
-	const url = `product_toogle_trending?product_id=${id}`;
-
-	alert('Product is now Trending');
+const cancelOrder = async (order_id) => {
+	const url = `/mark_order?order_id=${order_id}&as=0`;
 
 	try {
-		const response = await axios.get(url);
+		const response = await axios(url);
 
 		if (response.status == 200) {
-			alert(`Trending`);
-			window.location.reload();
+			toast.success(`Order Cancelled`);
 		} else {
 			console.log({ response });
 		}
 	} catch (err) {
-		console.log({ err });
+		console.error({ response });
 	}
 };
 
-const delete_product = (id) => {
-	swal({
-		title: 'Are you sure?',
-		text: 'Once deleted, you cannot not revert it',
-		icon: 'error',
-		buttons: true,
-		dangerMode: true,
-	}).then(async (value) => {
-		if (value) {
-			alert(`Product is Deleted`);
+const completeOrder = async (order_id) => {
+	const url = `/mark_order?order_id=${order_id}&as=1`;
+
+	try {
+		const response = await axios(url);
+
+		if (response.status == 200) {
+			toast.success(`Order Completed`);
+		} else {
+			console.log({ response });
 		}
-	});
+	} catch (err) {
+		console.error({ response });
+	}
 };
 
 const FilterComponent = ({ filterText, setFilterText }) => {
@@ -161,20 +164,16 @@ const OrderPage = () => {
 			cell: (row) => {
 				return (
 					<>
-						<div className='tw-flex tw-flex-row tw-gap-1'>
-							<Button size='sm' variant='primary'>
-								View
-							</Button>
-							<Button
-								size='sm'
-								variant='warning'
+						<div className='tw-flex tw-flex-row tw-gap-2'>
+							<AiOutlineEye
+								className='tw-cursor-pointer'
+								size={'20px'}
+							/>
+							<AiOutlineFilePdf
+								className='tw-cursor-pointer'
+								size={'20px'}
 								onClick={handlePrint}
-							>
-								Print
-							</Button>
-							<Button size='sm' variant='danger'>
-								Cancel
-							</Button>
+							/>
 						</div>
 					</>
 				);
