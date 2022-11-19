@@ -18,6 +18,7 @@ import { useFetch } from '../../hooks';
 
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import OrderDetailModal from '../../components/model/OrderDetailModal';
 
 const BASE_URL = `http://139.59.22.201/api/static/product/image`;
 
@@ -100,9 +101,33 @@ const demo_data = [
 	},
 ];
 
+let selectedOrder = {};
+
+const handleOrderDetail = async (order, setShow) => {
+	const url = `/get_order_products_micro?order_id=${order.order_id}&user_id=${order.customer_mobile_number}`;
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.status == 200) {
+			// console.clear();
+			// console.log(response);
+			order['products'] = response.data.products;
+
+			selectedOrder = order;
+			setShow(true);
+		}
+	} catch (err) {
+		toast.error(`Error fetching Order`);
+		console.log({ err });
+	}
+};
+
 const OrderPage = () => {
 	const [filterText, setFilterText] = useState('');
 	const [invoiceShow, setInvoiceShow] = useState(false);
+
+	const [show, setShow] = useState(false);
 
 	const { data, error, isLoading } = useFetch('get_current_active_orders');
 
@@ -166,6 +191,11 @@ const OrderPage = () => {
 					<>
 						<div className='tw-flex tw-flex-row tw-gap-2'>
 							<AiOutlineEye
+								onClick={() => {
+									handleOrderDetail(row, setShow);
+									// selectedOrder = row;
+									// setShow(true)
+								}}
 								className='tw-cursor-pointer'
 								size={'20px'}
 							/>
@@ -232,6 +262,14 @@ const OrderPage = () => {
 			<div id='invoice' style={{ display: 'none' }}>
 				<InvoiceBill />
 			</div>
+
+			{show && (
+				<OrderDetailModal
+					show={show}
+					setShow={setShow}
+					order={selectedOrder}
+				/>
+			)}
 			{/* {invoiceShow && <InvoiceBill />} */}
 		</>
 	);
