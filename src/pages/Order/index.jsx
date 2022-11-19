@@ -259,9 +259,9 @@ const OrderPage = () => {
 			<Card className='p-2'>
 				<Table columns={columns} data={filteredData} />
 			</Card>
-			<div id='invoice' style={{ display: 'none' }}>
+			{/* <div id='invoice' style={{ display: 'none' }}>
 				<InvoiceBill />
-			</div>
+			</div> */}
 
 			{show && (
 				<OrderDetailModal

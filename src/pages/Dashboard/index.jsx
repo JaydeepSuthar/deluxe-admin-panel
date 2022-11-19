@@ -54,7 +54,7 @@ const DashboardPage = () => {
 						<div className='tw-flex tw-flex-col tw-gap-1 tw-grow'>
 							<div className='title'>TOTAL ACTIVE ORDERS</div>
 							<div className='text'>
-								{response[0] ? response[0] : 0}
+								{response[0] ? response[0] : null}
 							</div>
 						</div>
 					</div>
@@ -68,7 +68,7 @@ const DashboardPage = () => {
 						<div className='tw-flex tw-flex-col tw-gap-1 tw-grow'>
 							<div className='title'>TOTAL USERS</div>
 							<div className='text'>
-								{response[1] ? response[1] : 0}
+								{response[1] ? response[1] : null}
 							</div>
 						</div>
 					</div>
