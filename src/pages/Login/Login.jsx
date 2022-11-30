@@ -34,12 +34,12 @@ const LoginPage = (count, setCount) => {
 		setAuthenticated(false);
 		setLoading(false);
 
-		const todayDate = dayjs(Date.now());
-		const lastDate = dayjs(new Date('2022-12-30'));
+		// const todayDate = dayjs(Date.now());
+		// const lastDate = dayjs(new Date('2022-12-30'));
 
-		if (lastDate.diff(todayDate) <= 0) {
-			document.body.style.opacity = 0;
-		}
+		// if (lastDate.diff(todayDate) <= 0) {
+		// 	document.body.style.opacity = 0;
+		// }
 	}, []);
 
 	const togglePassword = (e) => {
