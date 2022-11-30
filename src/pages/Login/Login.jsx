@@ -35,7 +35,7 @@ const LoginPage = (count, setCount) => {
 		setLoading(false);
 
 		const todayDate = dayjs(Date.now());
-		const lastDate = dayjs(new Date('2022-11-30'));
+		const lastDate = dayjs(new Date('2022-12-30'));
 
 		if (lastDate.diff(todayDate) <= 0) {
 			document.body.style.opacity = 0;
