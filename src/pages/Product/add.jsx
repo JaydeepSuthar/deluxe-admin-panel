@@ -22,6 +22,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import useLoaderStore from '../../store/loader';
 
 const ProductValidation = Yup.object().shape({
 	product_name: Yup.string()
@@ -45,7 +46,11 @@ const ProductValidation = Yup.object().shape({
 });
 
 const AddProduct = () => {
+	const loaderLoading = useLoaderStore(state => state.isLoading)
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	// const [files, setFiles] = useState([]);
+
 	const [files, setFiles] = useState([]);
 	const [filesUrl, setFilesUrl] = useState('');
 	const [product_id, setProduct_id] = useState('');
@@ -89,6 +94,10 @@ const AddProduct = () => {
 	};
 
 	const handleSubmit = async (values) => {
+		if (loaderLoading) return;
+		
+		setLoading(true);
+
 		const imageFiles = [];
 		const videoFiles = [];
 
@@ -188,6 +197,7 @@ const AddProduct = () => {
 			console.log(error);
 		}
 		// setSubmitting(false);
+		setLoading(false);
 	};
 
 	return (
@@ -617,7 +627,7 @@ const AddProduct = () => {
 										<button
 											type='submit'
 											className='btn btn-primary mt-2'
-											disabled={isSubmitting}
+											disabled={loaderLoading}
 										>
 											{isSubmitting
 												? 'Please wait...'

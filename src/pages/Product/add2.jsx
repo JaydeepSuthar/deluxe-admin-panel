@@ -4,8 +4,12 @@ import { Button } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
+import useLoaderStore from '../../store/loader';
 
 const AddProductPage2 = () => {
+	const loaderLoading = useLoaderStore((state) => state.isLoading);
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	const [value, setValue] = useState('');
 	const [product_id, setProduct_id] = useState('');
 	const navigate = useNavigate();
@@ -16,6 +20,10 @@ const AddProductPage2 = () => {
 	}, []);
 
 	const handleSubmit = async (value) => {
+		if (loaderLoading) return;
+
+		setLoading(true);
+
 		try {
 			let fd = new FormData();
 			fd.append('product_id', product_id);
@@ -32,6 +40,8 @@ const AddProductPage2 = () => {
 		} catch (error) {
 			alert(JSON.stringify(error, null, 2));
 		}
+
+		setLoading(false);
 	};
 	return (
 		<>
@@ -52,6 +62,7 @@ const AddProductPage2 = () => {
 				onClick={() => {
 					handleSubmit(value);
 				}}
+				disabled={loaderLoading}
 			>
 				Save
 			</Button>

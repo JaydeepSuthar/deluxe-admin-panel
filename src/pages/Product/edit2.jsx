@@ -5,8 +5,12 @@ import toast from 'react-hot-toast';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useLoaderStore from '../../store/loader';
 
 const EditProductPage2 = () => {
+	const loaderLoading = useLoaderStore((state) => state.setLoading);
+	const setLoading = useLoaderStore((state) => state.setLoading);
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -16,6 +20,10 @@ const EditProductPage2 = () => {
 	const [product_id, setProduct_id] = useState('');
 
 	const handleSubmit = async (value) => {
+		if (loaderLoading) return;
+
+		setLoading(true);
+
 		let fd = new FormData();
 
 		fd.append('id', product_id);
@@ -34,6 +42,8 @@ const EditProductPage2 = () => {
 			console.log(`Err`);
 			console.error(err);
 		}
+
+		setLoading(false);
 	};
 	return (
 		<>
@@ -54,6 +64,7 @@ const EditProductPage2 = () => {
 				onClick={() => {
 					handleSubmit(value);
 				}}
+				disabled={loaderLoading}
 			>
 				Save
 			</Button>

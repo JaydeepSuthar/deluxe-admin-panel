@@ -13,6 +13,7 @@ const EditProductPage3 = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const loaderLoading = useLoaderStore((state) => state.isLoading);
 	const setLoading = useLoaderStore((state) => state.setLoading);
 
 	const [files, setFiles] = useState([]);
@@ -36,6 +37,8 @@ const EditProductPage3 = () => {
 	};
 
 	const handleSubmit = async () => {
+		if (loaderLoading) return;
+
 		setLoading(true);
 
 		if (newFiles) {
@@ -56,7 +59,7 @@ const EditProductPage3 = () => {
 					);
 
 					if (response.status != 200) {
-						toast.error(`Error Uploading Gallery`)
+						toast.error(`Error Uploading Gallery`);
 						console.log(response);
 					} else {
 						console.log(response);
@@ -249,6 +252,7 @@ const EditProductPage3 = () => {
 					onClick={() => {
 						handleSubmit();
 					}}
+					disabled={loaderLoading}
 				>
 					Save
 				</Button>

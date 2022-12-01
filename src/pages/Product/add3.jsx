@@ -7,6 +7,8 @@ import swal from 'sweetalert';
 import useLoaderStore from '../../store/loader';
 
 const AddProductPage3 = () => {
+	const loaderLoading = useLoaderStore((state) => state.isLoading);
+
 	// const [files, setFiles] = useState([]);
 	const navigate = useNavigate();
 
@@ -31,6 +33,8 @@ const AddProductPage3 = () => {
 	};
 
 	const handleSubmit = async () => {
+		if (loaderLoading) return;
+
 		setLoading(true);
 
 		if (files) {
@@ -150,7 +154,7 @@ const AddProductPage3 = () => {
 									width={'200px'}
 									height={'200px'}
 								/>
-								
+
 								<button
 									className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
 									onClick={(e) => {
@@ -173,6 +177,7 @@ const AddProductPage3 = () => {
 					onClick={() => {
 						handleSubmit();
 					}}
+					disabled={loaderLoading}
 				>
 					Save
 				</Button>
