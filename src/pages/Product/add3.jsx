@@ -1,10 +1,23 @@
+// import { DndContext } from '@dnd-kit/core';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import useLoaderStore from '../../store/loader';
+
+import { DndContext, closestCenter } from '@dnd-kit/core';
+
+import {
+	arrayMove,
+	SortableContext,
+	verticalListSortingStrategy,
+	horizontalListSortingStrategy,
+	useSortable,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
 
 const AddProductPage3 = () => {
 	const loaderLoading = useLoaderStore((state) => state.isLoading);
@@ -30,6 +43,21 @@ const AddProductPage3 = () => {
 		setFiles(filesArr);
 		// setFilesUrl(URL.createObjectURL(file));
 		// setFiles(files);
+	};
+
+	const handleDragEnd = (event) => {
+		console.log(event);
+
+		const { active, over } = event;
+
+		if (active.id !== over.id) {
+			setFiles((items) => {
+				const activeIndex = items.indexOf(active.id);
+				const overIndex = items.indexOf(over.id);
+
+				return arrayMove(items, activeIndex, overIndex);
+			});
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -111,65 +139,91 @@ const AddProductPage3 = () => {
 					);
 				})} */}
 
-				{files?.length > 0 &&
-					files.map((item, idx) => {
-						let itemToURL = URL.createObjectURL(item);
+				<DndContext
+					collisionDetection={closestCenter}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext
+						items={files}
+						strategy={horizontalListSortingStrategy}
+					>
+						{files?.length > 0 &&
+							files.map((item, idx) => {
+								let itemToURL = URL.createObjectURL(item);
 
-						if (item?.type?.split('/')[0] == 'video') {
-							return (
-								<div className='tw-flex tw-flex-col'>
-									<video
-										width={'200px'}
-										height={'200px'}
-										muted
-										controls
-										playsInline
-									>
-										<source
-											src={itemToURL}
-											type={item?.type}
-										/>
-									</video>
+								return (
+									<SortableItem
+										key={itemToURL}
+										id={item}
+										src={itemToURL}
+										files={files}
+										setFiles={setFiles}
+										item={item}
+										itemToURL={itemToURL}
+									/>
+								);
 
-									<button
-										className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
-										onClick={(e) => {
-											e.preventDefault();
-											let newFilesArr = files.filter(
-												(file) => file.name != item.name
-											);
-											setFiles(newFilesArr);
-										}}
-									>
-										Remove
-									</button>
-								</div>
-							);
-						}
+								// if (item?.type?.split('/')[0] == 'video') {
+								// 	return (
+								// 		<div className='tw-flex tw-flex-col'>
+								// 			<video
+								// 				width={'200px'}
+								// 				height={'200px'}
+								// 				muted
+								// 				controls
+								// 				playsInline
+								// 			>
+								// 				<source
+								// 					src={itemToURL}
+								// 					type={item?.type}
+								// 				/>
+								// 			</video>
 
-						return (
-							<div className='tw-flex tw-flex-col'>
-								<img
-									src={itemToURL}
-									width={'200px'}
-									height={'200px'}
-								/>
+								// 			<button
+								// 				className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+								// 				onClick={(e) => {
+								// 					e.preventDefault();
+								// 					let newFilesArr =
+								// 						files.filter(
+								// 							(file) =>
+								// 								file.name !=
+								// 								item.name
+								// 						);
+								// 					setFiles(newFilesArr);
+								// 				}}
+								// 			>
+								// 				Remove
+								// 			</button>
+								// 		</div>
+								// 	);
+								// }
 
-								<button
-									className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
-									onClick={(e) => {
-										e.preventDefault();
-										let newFilesArr = files.filter(
-											(file) => file.name != item.name
-										);
-										setFiles(newFilesArr);
-									}}
-								>
-									Remove
-								</button>
-							</div>
-						);
-					})}
+								// return (
+								// 	<div className='tw-flex tw-flex-col'>
+								// 		<img
+								// 			src={itemToURL}
+								// 			width={'200px'}
+								// 			height={'200px'}
+								// 		/>
+
+								// 		<button
+								// 			className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+								// 			onClick={(e) => {
+								// 				e.preventDefault();
+								// 				let newFilesArr = files.filter(
+								// 					(file) =>
+								// 						file.name != item.name
+								// 				);
+								// 				setFiles(newFilesArr);
+								// 			}}
+								// 		>
+								// 			Remove
+								// 		</button>
+								// 	</div>
+								// );
+							})}
+					</SortableContext>
+				</DndContext>
 			</div>
 			<div>
 				<Button
@@ -185,5 +239,69 @@ const AddProductPage3 = () => {
 		</>
 	);
 };
+
+const SortableItem = React.memo((props) => {
+	const { files, setFiles, id: item, itemToURL } = props;
+
+	const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({ id: props.id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
+	if (item?.type?.split('/')[0] == 'video') {
+		return (
+			<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+				<div className='tw-flex tw-flex-col'>
+					<video
+						width={'200px'}
+						height={'200px'}
+						muted
+						controls
+						playsInline
+					>
+						<source src={itemToURL} type={item?.type} />
+					</video>
+
+					<button
+						className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+						onClick={(e) => {
+							e.preventDefault();
+							let newFilesArr = files.filter(
+								(file) => file.name != item.name
+							);
+							setFiles(newFilesArr);
+						}}
+					>
+						Remove
+					</button>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+			<div className='tw-flex tw-flex-col'>
+				<img src={itemToURL} width={'200px'} height={'200px'} />
+
+				<button
+					className='tw-bg-red-500 tw-p-1 tw-rounded tw-border-none tw-text-white'
+					onClick={(e) => {
+						e.preventDefault();
+						let newFilesArr = files.filter(
+							(file) => file.name != item.name
+						);
+						setFiles(newFilesArr);
+					}}
+				>
+					Remove
+				</button>
+			</div>
+		</div>
+	);
+});
 
 export default AddProductPage3;

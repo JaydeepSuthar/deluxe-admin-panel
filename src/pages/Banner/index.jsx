@@ -12,12 +12,13 @@ const BANNER_URL = `http://139.59.22.201/api/static/app_banners`;
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+// import required modules
+import { Navigation, Pagination } from 'swiper';
+
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-
-// import required modules
-import { Navigation } from 'swiper';
+import 'swiper/css/pagination';
 
 const BannerPage = () => {
 	const navigate = useNavigate();
@@ -92,18 +93,15 @@ const BannerPage = () => {
 					/> */}
 
 					<Swiper
-						// spaceBetween={50}
-						// slidesPerView={1}
-						// onSlideChange={() => console.log('slide change')}
-						// onSwiper={(swiper) => console.log(swiper)}
 						navigation={true}
-						modules={[Navigation]}
+						pagination={{ clickable: true }}
+						modules={[Navigation, Pagination]}
 					>
 						{data?.banners?.map((item) => {
 							return (
 								<SwiperSlide>
 									<img
-										className='d-block w-100  tw-h-[600px] tw-object-contain'
+										className='d-block w-100  tw-h-[300px] tw-object-contain'
 										src={`${BANNER_URL}/${item.banner}`}
 										alt='First slide'
 									/>
@@ -122,30 +120,6 @@ const BannerPage = () => {
 				/>
 			)}
 		</>
-	);
-};
-
-const CarouselComponent = ({ index, setIndex, handleSelect, images }) => {
-	return (
-		<Carousel
-			// className='tw-w-full'
-			activeIndex={index}
-			onSelect={handleSelect}
-			pause='hover'
-		>
-			{images.map((item, idx) => (
-				<Carousel.Item>
-					<img
-						className='d-block w-100  tw-h-[600px] tw-object-contain'
-						src={`${BANNER_URL}/${item.banner}`}
-						alt='First slide'
-					/>
-					<Carousel.Caption>
-						<h3>{item.title ? item.title : idx}</h3>
-					</Carousel.Caption>
-				</Carousel.Item>
-			))}
-		</Carousel>
 	);
 };
 

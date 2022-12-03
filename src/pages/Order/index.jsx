@@ -189,21 +189,21 @@ const OrderPage = () => {
 			cell: (row) => {
 				return (
 					<>
-						<div className='tw-flex tw-flex-row tw-gap-2'>
+						<div className='tw-flex tw-flex-row tw-justify-center'>
 							<AiOutlineEye
 								onClick={() => {
 									handleOrderDetail(row, setShow);
 									// selectedOrder = row;
 									// setShow(true)
 								}}
-								className='tw-cursor-pointer'
+								className='tw-cursor-pointer tw-ml-3'
 								size={'20px'}
 							/>
-							<AiOutlineFilePdf
+							{/* <AiOutlineFilePdf
 								className='tw-cursor-pointer'
 								size={'20px'}
 								onClick={handlePrint}
-							/>
+							/> */}
 						</div>
 					</>
 				);

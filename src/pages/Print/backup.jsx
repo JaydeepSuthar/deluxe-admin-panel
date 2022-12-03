@@ -1,25 +1,13 @@
-import { Button } from 'react-bootstrap';
-import dayjs from 'dayjs';
-import { useEffect, useRef } from 'react';
-import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './style.css';
 
 const Print = () => {
-	const bodyRef = useRef(null);
 	const location = useLocation();
-	const navigate = useNavigate();
 
 	const printData = location.state;
 
 	console.log({ printData });
-
-	const handlePrint = () => {
-		window.print();
-	};
-
-	const goBack = () => {
-		navigate('/order');
-	};
 
 	const {
 		amount: totalAmount,
@@ -28,24 +16,19 @@ const Print = () => {
 		order_id,
 	} = printData;
 
-	let totalDiscount = 0;
-
 	return (
 		<>
-			<div
-				ref={bodyRef}
-				className='offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding'
-			>
+			<div className='offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding'>
 				<div className='card'>
 					<div className='card-body'>
 						<div className='row mb-4'>
 							<div className='col-sm-6'>
 								<h5 className='mb-3'>From:</h5>
 								<h4 className='text-dark mb-1'>Deluxe</h4>
-								{/* <div>29, Singla Street</div>
+								<div>29, Singla Street</div>
 								<div>Sikeston,New Delhi 110034</div>
 								<div>Email: contact@bbbootstrap.com</div>
-								<div>Phone: +91 9897 989 989</div> */}
+								<div>Phone: +91 9897 989 989</div>
 							</div>
 							<div className='col-sm-6 '>
 								<h5 className='mb-1'>To:</h5>
@@ -58,42 +41,33 @@ const Print = () => {
 								<table className='table table-clear table-borderless table-sm'>
 									<tbody>
 										<tr>
-											<td className='left'>Name :-</td>
+											<td className='left'>Name</td>
 											<td className='right'>
-												{customer_name || 'Cash'}
+												{/* NAME */}
 											</td>
 										</tr>
 										<tr>
-											<td className='left'>GSTIN :-</td>
+											<td className='left'>GSTIN</td>
 											<td className='right'>
 												{/* GST IN */}
 											</td>
 										</tr>
 										<tr>
-											<td className='left'>
-												SUPPLY TO :-
-											</td>
+											<td className='left'>SUPPLY TO</td>
 											<td className='right'>
 												{/* SUPPLY TO */}
 											</td>
 										</tr>
 										<tr>
-											<td className='left'>
-												BILL NO. :-
-											</td>
+											<td className='left'>BILL NO.</td>
 											<td className='right'>
-												{/* BILL NO */}#{order_id}
+												{/* BILL NO */}
 											</td>
 										</tr>
 										<tr>
-											<td className='left'>
-												BILL DATE. :-
-											</td>
+											<td className='left'>BILL DATE.</td>
 											<td className='right'>
 												{/* DATE */}
-												{dayjs(Date.now()).format(
-													'DD-MM-YYYY'
-												)}
 											</td>
 										</tr>
 									</tbody>
@@ -109,51 +83,53 @@ const Print = () => {
 										<th>Description</th>
 										<th className='right'>Price</th>
 										<th className='center'>Qty</th>
-										<th className='right'>Discount</th>
 										<th className='right'>Total</th>
 									</tr>
 								</thead>
 								<tbody>
-									{products.map((product, idx) => {
-										let total =
-											product?.ordering_price *
-												product?.quantity -
-											product?.discount;
-
-										if (total < 0) total = 0;
-
-										totalDiscount += product?.discount;
-
-										return (
-											<>
-												<tr>
-													<td className='center'>
-														{idx + 1}
-													</td>
-													<td className='left strong'>
-														{product?.title}
-													</td>
-													<td className='left'>
-														{product?.description}
-													</td>
-													<td className='right'>
-														{
-															product?.ordering_price
-														}
-													</td>
-													<td className='center'>
-														{product?.quantity}
-													</td>
-													<td className='center'>
-														{product?.discount}
-													</td>
-													<td className='right'>
-														₹ {total}
-													</td>
-												</tr>
-											</>
-										);
-									})}
+									<tr>
+										<td className='center'>1</td>
+										<td className='left strong'>
+											Iphone 10X
+										</td>
+										<td className='left'>
+											Iphone 10X with headphone
+										</td>
+										<td className='right'>$1500</td>
+										<td className='center'>10</td>
+										<td className='right'>$15,000</td>
+									</tr>
+									<tr>
+										<td className='center'>2</td>
+										<td className='left'>Iphone 8X</td>
+										<td className='left'>
+											Iphone 8X with extended warranty
+										</td>
+										<td className='right'>$1200</td>
+										<td className='center'>10</td>
+										<td className='right'>$12,000</td>
+									</tr>
+									<tr>
+										<td className='center'>3</td>
+										<td className='left'>Samsung 4C</td>
+										<td className='left'>
+											Samsung 4C with extended warranty
+										</td>
+										<td className='right'>$800</td>
+										<td className='center'>10</td>
+										<td className='right'>$8000</td>
+									</tr>
+									<tr>
+										<td className='center'>4</td>
+										<td className='left'>Google Pixel</td>
+										<td className='left'>
+											Google prime with Amazon prime
+											membership
+										</td>
+										<td className='right'>$500</td>
+										<td className='center'>10</td>
+										<td className='right'>$5000</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
@@ -175,20 +151,17 @@ const Print = () => {
 												</strong>
 											</td>
 											<td className='right'>
-												₹ {totalDiscount + totalAmount}
+												$28,809,00
 											</td>
 										</tr>
-										<tr>
+										{/* <tr>
 											<td className='left'>
 												<strong className='text-dark'>
-													Discount
-													{/* (20%) */}
+													Discount (20%)
 												</strong>
 											</td>
-											<td className='right'>
-												₹ {totalDiscount.toFixed(2)}
-											</td>
-										</tr>
+											<td className='right'>$5,761,00</td>
+										</tr> */}
 										<tr>
 											<td className='left'>
 												<strong className='text-dark'>
@@ -197,7 +170,7 @@ const Print = () => {
 											</td>
 											<td className='right'>
 												<strong className='text-dark'>
-													₹ {totalAmount}
+													{totalAmount}
 												</strong>
 											</td>
 										</tr>
@@ -212,15 +185,6 @@ const Print = () => {
 						</p>
 					</div>
 				</div>
-			</div>
-
-			<div className='tw-flex tw-justify-center tw-gap-1 no-print'>
-				<Button variant='warning' onClick={handlePrint}>
-					Print
-				</Button>
-				<Button variant='success' onClick={goBack}>
-					Back
-				</Button>
 			</div>
 		</>
 	);
