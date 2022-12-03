@@ -77,30 +77,6 @@ const FilterComponent = ({ filterText, setFilterText }) => {
 	);
 };
 
-const demo_data = [
-	{
-		customer_name: 'Jaydeep',
-		customer_mobile_number: '7894561230',
-		order_id: '#4654789',
-		amount: 700,
-		order_date: new Date(),
-	},
-	{
-		customer_name: 'Jaydeep',
-		customer_mobile_number: '7894561230',
-		order_id: '#452222',
-		amount: 500,
-		order_date: new Date(),
-	},
-	{
-		customer_name: 'Jaydeep',
-		customer_mobile_number: '7894561230',
-		order_id: '#465777',
-		amount: 7000,
-		order_date: new Date(),
-	},
-];
-
 let selectedOrder = {};
 
 const handleOrderDetail = async (order, setShow) => {

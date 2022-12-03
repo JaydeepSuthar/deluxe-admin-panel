@@ -33,7 +33,6 @@ import InvoiceBill from './components/invoice/invoicebill/InvoiceBill';
 
 import useAuthStore from './store/auth';
 import { useEffect } from 'react';
-import Invoice from './components/invoice2/invoice';
 import EditProduct from './pages/Product/edit';
 import EditProductPage2 from './pages/Product/edit2';
 import EditProductPage3 from './pages/Product/edit3';
@@ -48,11 +47,11 @@ const ProtectedRoute = () => {
 	const access_token = localStorage.getItem('access_token');
 
 	useEffect(() => {
-		// if (access_token) {
-		// 	axios.defaults.headers.common[
-		// 		'Authorization'
-		// 	] = `Bearer ${access_token}`;
-		// }
+		if (access_token) {
+			axios.defaults.headers.common[
+				'Authorization'
+			] = `Bearer ${access_token}`;
+		}
 
 		if (!isAuthenticated || !access_token) {
 			navigate('/');
