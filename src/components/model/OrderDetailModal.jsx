@@ -1,19 +1,24 @@
 import axios from 'axios';
 import { useEffect, useRef } from 'react';
 import { Button, Image, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const IMG_URL = `http://139.59.22.201/api/static/product/image`;
 
 const OrderDetailModal = ({ order, show, setShow }) => {
 	const printRef = useRef(null);
+	const navigate = useNavigate();
 
+	// const handlePrint = () => {
+	// 	let printWindow = window.open();
+	// 	printWindow.focus();
+	// 	printWindow.document.body.innerHTML = printRef.current.innerHTML;
+	// 	// printWindow.document.body.style.margin = '0px';
+	// 	printWindow.print();
+	// 	printWindow.close();
+	// };
 	const handlePrint = () => {
-		let printWindow = window.open();
-		printWindow.focus();
-		printWindow.document.body.innerHTML = printRef.current.innerHTML;
-		// printWindow.document.body.style.margin = '0px';
-		printWindow.print();
-		printWindow.close();
+		navigate('/print', { state: order });
 	};
 
 	return (
@@ -153,7 +158,9 @@ const OrderDetailModal = ({ order, show, setShow }) => {
 				</Modal.Body>
 				<Modal.Footer>
 					<div className='tw-flex tw-gap-1'>
-						<Button variant='success'>Print</Button>
+						<Button variant='success' onClick={handlePrint}>
+							Print
+						</Button>
 						<Button onClick={() => setShow(false)}>Close</Button>
 					</div>
 				</Modal.Footer>

@@ -38,6 +38,8 @@ import EditProduct from './pages/Product/edit';
 import EditProductPage2 from './pages/Product/edit2';
 import EditProductPage3 from './pages/Product/edit3';
 
+import Print from './pages/Print'
+
 const ProtectedRoute = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -78,7 +80,8 @@ const App = () => {
 
 			<Routes>
 				<Route path='/' element={<LoginPage />} />
-				<Route path='/invoice' element={<InvoiceBill />} />
+				{/* <Route path='/invoice' element={<InvoiceBill />} /> */}
+				<Route path='/print' element={<Print />} />
 
 				<Route element={<SidebarLayout routes={routes} />}>
 					<Route element={<ProtectedRoute />}>
